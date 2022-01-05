@@ -1,0 +1,254 @@
+---
+title: "R Plotting"
+output: html_notebook
+---
+
+### Libraries and setup
+
+```{r}
+library(readr)
+setwd("D:/Rdir/r_for_healthcare/plotting/")
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+### Line and scatter plots
+```{r}
+set.seed(1)
+x <- rnorm(1000, 50, 2)
+y <- rnorm(1000, 25, 2)
+z <- as.factor(sample(1:2, 1000, replace=TRUE))
+plot(x,y,xlab='Outcome 1', ylab='Outcome 2', main='Comparison of Outcome measures', col=z)
+```
+
+```{r}
+x <- c(0,5,10,15,20,25,30)
+y <- c(81,95,102,120,110,108,92)
+z <- c(78,90,100,118,125,112,96)
+plot(c(x,x), c(y,z), xlab='Time', ylab='Heart rate',
+     main='Patient heart rate during exercise', pch=c(1,2))
+lines(x,y,col='red',lty=1)
+lines(x,z,col='blue',lty=2)
+legend('topleft', c('Pt1', 'Pt2'), col=c('red', 'blue'), lty=c(1,1))
+```
+### Histograms
+```{r}
+x <- rexp(1000, 10)
+hist(x, xlab='Inter-arrival time (Time unit=hours)',
+     ylab='Frequency', main='Inter-arrival time of people to emergency department')
+```
+
+```{r}
+hist(x,xlab='Inter-arrival time (Time unit=hours)',
+     ylab='Frequency', main='Inter-arrival time of people to emergency department', breaks=15, xlim=c(0,1), ylim=c(0,500))
+```
+```{r}
+h <- hist(x,xlab="Inter-arrival time (Time unit = hours)",ylab="Frequency",
+     main="Inter-arrival time of people to emergency department",breaks=15)
+h
+maxH <- max(h$counts)
+yMax <- (maxH + ((maxH/100)*20))
+hist(x,xlab='Inter-arrival time (Time unit=hours)',
+     ylab='Frequency', main='Inter-arrival time of people to emergency department', breaks=15, xlim=c(0,1), ylim=c(0, yMax))
+```
+
+### Bar plots
+```{r}
+x <- c(rep('Cluster 4', 24), rep('Cluster 5', 31), rep('Cluster 6', 14))
+xTab <- table(x)
+xTab
+barplot(xTab, xlab='Care cluster', ylab='Frequency',
+        main='Occurrences of care clusters')
+```
+
+```{r}
+x <- c(rep("Cluster 4",24), rep("Cluster 5", 31), rep("Cluster 6",14),rep("Cluster 4",17),
+       rep("Cluster 5", 23), rep("Cluster 6",29))
+y <- c(rep("2016",69),rep("2017",69))
+xyTab <- table(x,y)
+xyTab
+
+barplot(xyTab, xlab='Care cluster', ylab='Frequency',
+        main='Occurrences of care clusters', col=c('red','green','blue'), beside=TRUE, legend.text=TRUE,
+        args.legend=list(x=5.5,y=30))
+```
+### Statistical process control
+```{r}
+library(qicharts)
+set.seed(10)
+y <- rpois(24,10)
+a <- qic(y, runvals=TRUE)
+```
+
+```{r}
+y[13:24] <- rpois(12,5)
+b <- qic(y, runvals=TRUE)
+qic(y,freeze=12)
+qic(y,breaks=12)
+```
+
+```{r}
+y <- rbinom(24,30,0.2)
+n <- sample(22:30,24,replace=TRUE)
+qic(y,n)
+week <- seq(as.Date("2016-01-01"),length.out=24,by="week")
+notes <- NA
+notes[17] <- "Note for this point"
+qic(y, n, x=week, main="Run chart", ylab="Proportion", xlab="Week", notes=notes)
+```
+```{r}
+u.referrals <- 30
+u.r2a <- 1
+u.days <- u.referrals*u.r2a
+p.Miss <- 0.2
+
+referrals <- rpois(24,lambda=u.referrals)
+patientdays <- round(rnorm(24,mean=u.days,sd=4))
+n.Miss <- rpois(24, lambda=u.referrals*p.Miss)
+n.pat.Miss <- rbinom(24,size=u.referrals,prob=p.Miss)
+week <- seq(as.Date("2016-01-01"),length.out=24,by="week")
+
+d <- data.frame(week,referrals,patientdays,n.Miss,n.pat.Miss)
+d
+c <- qic(n.Miss, x=week, data=d, chart="c", ylab="count", xlab="week", runvals=TRUE)
+d <- qic(n.Miss, n=patientdays, x=week, data=d, chart="u", multiply=1, ylab="count", xlab="week")
+```
+```{r}
+d <- qic(n.Miss, n=patientdays, x=week, data=d, chart="u", multiply=1, ylab="count", xlab="week")
+```
+### Correlations and linear regression
+
+```{r}
+distance <- sort(runif(100,1,70))
+time <- sort(runif(100,5,120))
+data <- cbind(distance,time)
+data <- as.data.frame(data)
+cor(data,use="all.obs",method="pearson")
+
+a <- lm(distance ~ time, data=data)
+summary(a)
+b <- a$coefficients
+b
+plot(data$time,data$distance)
+abline(a)
+```
+```{r}
+c <- summary(data$time)
+cMin <- min(data$time)
+cMax <- max(data$time)
+d <- seq(cMin,cMax,by=0.05)
+confInt <- predict(a, newdata=data.frame(time=d), interval="confidence", level=0.95)
+plot(data$time,data$distance, main="Distance over time", xlab="Time", ylab="Distance", pch=20)
+abline(a)
+lines(d,confInt[,2], col="blue", lty=2)
+lines(d,confInt[,3], col="blue", lty=2)
+```
+### Advanced plotting with ggplot2
+```{r}
+library(ggplot2)
+mpg <- ggplot2::mpg   #import data
+ggplot(data=mpg)  #assign data to ggplot object
+
+# Map displ to the x-axis and hwy to the y-axis
+ggplot(data=mpg) +
+  geom_point(mapping=aes(x=displ,y=hwy))
+# Colour the points by class of vehicle
+ggplot(data=mpg) +
+  geom_point(mapping=aes(x=displ,y=hwy, color=class))
+# Change the size of the points based on the class of vehicle
+ggplot(data=mpg) +
+  geom_point(mapping=aes(x=displ,y=hwy, size=class))
+# Change the opacity (alpha) of the points based on the class of vehicle
+ggplot(data=mpg) +
+  geom_point(mapping=aes(x=displ,y=hwy, alpha=class))
+# Shape of the points is determined by the class of the vehicle
+ggplot(data=mpg) +
+  geom_point(mapping=aes(x=displ,y=hwy, shape=class))
+# All points on the plot are coloured blue
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+# Add a title and axis labels to the plot using the 'labs' component
+ggplot(data=mpg) + 
+  geom_point(mapping=aes(x=displ, y=hwy),
+             color="blue") +
+  labs(title="Example scatterplot",
+       x="Displacement", y="Highway efficency")
+```
+```{r}
+# separate into individual plots by class and arrange in 2 rows
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+# separate into individual plots by drive type and
+# number of cylinders arranged as a grid
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+```
+```{r}
+# Plotting a smooth curve through the data
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+# Plotting points and smooth curve
+ggplot(data = mpg) + 
+  geom_point(mapping=aes(x=displ,y=hwy, color=drv)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+```
+```{r}
+# global mapping of the x and and y axis variables
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping=aes(color=drv)) +
+  geom_smooth(mapping=aes(linetype=drv))
+
+# quick bar plot
+ggplot(data=mpg) +
+  geom_bar(mapping=aes(x=class))
+```
+```{r}
+ggplot(data=mpg) +
+  stat_count(mapping=aes(x=class))
+
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+```
+
+```{r}
+bar <- ggplot(data = mpg) + 
+  geom_bar(
+    mapping = aes(x = class, fill = class), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+bar + coord_flip()
+bar + coord_polar()
+# The plot will be saved to your working directory
+# unless otherwise specified
+ggsave("my_plot.png", plot=bar)
+```
+
+```{r}
+ggplot(data=mpg) +
+  geom_histogram(mapping=aes(x=hwy),
+                 col="black",
+                 fill="grey")
+```
+

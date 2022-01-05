@@ -1,0 +1,125 @@
+---
+title: "R Exercises"
+output: html_notebook
+---
+### Libraries and setup
+
+```{r}
+#install.packages('factoextra')
+#install.packages('dplyr')
+#install.packages('FactoMineR')
+#install.packages('fitdistrplus')
+#install.packages('actuaryr')
+library(factoextra)
+library(dplyr)
+library(readr)
+library(psych)
+library(FactoMineR)
+library(fitdistrplus)
+library(actuaryr)
+setwd("D:/Rdir/r_for_healthcare/exercises/")
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+### Exercise 1 - Transforming and analysis of mental health data
+```{r}
+m_data = read.csv('PD_Data_R_Training.csv')
+head(m_data)
+```
+
+```{r}
+# Calculate length of stay
+RefDate <- as.Date(m_data$ReferralDate, "%d/%m/%Y")
+RefDischarge <- as.Date(m_data$ReferralDischarge, "%d/%m/%Y")
+los <- as.numeric(RefDischarge - RefDate)
+m_data$los <- los
+m_data[,c(1,2,3,13)]
+```
+
+```{r}
+# Subset data by setting
+a <- row.names(table(m_data$Setting))
+commData <- subset(m_data,m_data$Setting == "Community")
+inpatData <- subset(m_data,m_data$Setting == "Inpatient")
+ooaData <- subset(m_data,m_data$Setting == "OOA")
+otherdata <- subset(m_data,m_data$Setting == "Other local beds")
+print(a)
+```
+```{r}
+# Table ward team and ICD-10 codes for each subset
+commTeamTab <- table(commData$WardTeam)
+commCodeTab <- table(commData$ICD10)
+commCodeTab
+print('-------')
+commTeamTab
+```
+```{r}
+# Table ICD-10 codes by cluster
+commCodeClusTab <- table(commData$ICD10,commData$Cluster)
+commCodeClusTab
+```
+```{r}
+# For loop to get total and mean los for each patient
+patLos <- m_data[c("ClientID","los")]
+patLos <- na.omit(patLos)
+uniId <- unique(patLos$ClientID)
+totLos <- rep(0,length(uniId))
+meanLos <- rep(0,length(uniId))
+for(i in 1:length(uniId)){
+  a <- subset(patLos, patLos$ClientID == uniId[i])
+  totLos[i] <- sum(a$los)
+  meanLos[i] <- mean(a$los)
+}
+patSumMat <- cbind(uniId,totLos,meanLos)
+patSumMat
+```
+### Exercise 2 - plotting and statistically describing mental health data
+
+```{r}
+# Plot length of stay as a histogram
+hist(m_data$los)
+```
+```{r}
+# Describe length of stay
+losDes <- describe(m_data$los)
+losClusDes <- describeBy(m_data$los, group=m_data$Cluster)
+losDes
+losClusDes[1]
+losClusDes[2]
+```
+
+```{r}
+# Subset the data by cluster
+clusSeven <- subset(m_data, m_data$Cluster == 7)
+clusEight <- subset(m_data, m_data$Cluster == 8)
+clusNA <- subset(m_data, is.na(m_data$Cluster))
+sprintf('Seven:%1$d, Eight:%2$d, NA:%3$d', 
+        length(clusSeven), length(clusEight), length(clusNA))
+
+```
+
+```{r}
+# Plot the cluster length of stays as histograms
+hist(clusSeven$los)
+hist(clusEight$los)
+hist(clusNA$los)
+```
+
+```{r}
+# Plot the cluster length of stays as a box plot
+boxplot(clusSeven$los,clusEight$los,clusNA$los, outline=FALSE)
+```
+

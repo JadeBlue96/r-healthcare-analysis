@@ -1,0 +1,188 @@
+---
+title: "R Statistics"
+output: html_notebook
+---
+### Libraries and setup
+
+```{r}
+#install.packages('factoextra')
+#install.packages('dplyr')
+#install.packages('FactoMineR')
+#install.packages('fitdistrplus')
+#install.packages('actuaryr')
+library(factoextra)
+library(dplyr)
+library(readr)
+library(psych)
+library(FactoMineR)
+library(fitdistrplus)
+library(actuaryr)
+setwd("D:/Rdir/r_for_healthcare/statistics/")
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+### Descriptive stats
+```{r}
+data <- data.frame(ID=seq(1,25,1), Age=sample(18:99,25,replace=TRUE), Gender=sample(1:2,25,replace=TRUE),
+Score=sample(0:50,25,replace=TRUE))
+data
+ageSum <- describe(data$Age)
+ageSum
+```
+```{r}
+ageGenSum <- describeBy(data$Age,data$Gender)
+ageGenSum
+```
+### T-tests
+```{r}
+data <- data.frame(ID=seq(1,25,1), ScoreOne=rpois(25,20),ScoreTwo=rpois(25,35))
+t.test(data$ScoreOne,data$ScoreTwo)
+boxplot(data$ScoreOne,data$ScoreTwo)
+```
+```{r}
+dataP <- data.frame(ID=seq(1,25,1), Age=sample(18:99,25,replace=TRUE), Gender=sample(1:2,25,replace=TRUE), ScoreOne=sample(0:50,25,replace=TRUE), ScoreTwo=sample(0:50,25,replace=TRUE))
+t.test(dataP$ScoreOne,dataP$ScoreTwo,paired=TRUE)
+boxplot(dataP$ScoreOne,dataP$ScoreTwo)
+```
+### Principal Component Analysis
+```{r}
+df_num <- data.frame(los=rexp(100, 5),
+weight=rnorm(100, 78, 12),
+height=rnorm(100, 165, 10),
+procedures=rpois(100, 1.5),
+age=rnorm(100, 45, 10),
+complexity=rexp(100, 2),
+severity=rexp(100, 3))
+df_num$bmi <- df_num$weight/((df_num$height/100)^2)
+
+head(df_num)
+df_pca <- prcomp(df_num,center=TRUE,scale.=TRUE)
+fviz_screeplot(df_pca,labels=TRUE)
+vars <- get_pca_var(df_pca)
+vars$contrib
+fviz_pca_var(df_pca)
+fviz_contrib(df_pca, choice = "var", axes = 1)
+fviz_contrib(df_pca, choice = "var", axes = 2)
+```
+```{r}
+df_cat <- data.frame(admitted=sample(0:1,100,replace=TRUE),
+                 admitType=sample(1:4,100,replace=TRUE),
+                 firstVisit=sample(0:1,100,replace=TRUE),
+                 complex=sample(0:1,100,replace=TRUE),
+                 ageGroup=sample(1:6,100,replace=TRUE),
+                 diagCat=sample(1:10,100,replace=TRUE),
+                 day=sample(1:7,100,replace=TRUE))
+head(df_cat)
+df_cat <- as.data.frame(lapply(df_cat, factor))
+str(df_cat)
+df_mca <- MCA(df_cat,graph=FALSE)
+fviz_screeplot(df_mca,labels=TRUE)
+vars <- get_mca_var(df_mca)
+vars$contrib
+fviz_mca_var(df_mca)
+fviz_contrib(df_mca, choice = "var", axes = 1)
+fviz_contrib(df_mca, choice = "var", axes = 2)
+```
+```{r}
+df_mix <- data.frame(admitType=sample(1:4,100,replace=TRUE),
+                     day=sample(1:7,100,replace=TRUE),
+                     diagCat=sample(1:10,100,replace=TRUE),
+                     complex=sample(0:1,100,replace=TRUE),
+                     los=rexp(100, 5),
+                     weight=rnorm(100, 78, 12),
+                     height=rnorm(100, 165, 10),
+                     procedures=rpois(100, 1.5),
+                     age=rnorm(100, 45, 10))
+head(df_mix)
+fac <- c(1:4)
+facNames <- names(df_mix[fac])
+df_mix[facNames] <- lapply(df_mix[facNames], factor)
+str(df_mix)
+df_famd <- FAMD(df_mix, graph=FALSE)
+eig.val <- df_famd$eig
+x <- barplot(eig.val[, 2], 
+        names.arg = 1:nrow(eig.val), 
+        main = "Variances Explained by Dimensions (%)",
+        xlab = "Principal Dimensions",
+        ylab = "Percentage of variances",
+        col ="steelblue")
+ 
+lines(x = x, eig.val[, 2], 
+      type = "b", pch = 19, col = "red")
+
+vars <- get_famd_var(df_famd)
+vars$contrib
+
+fviz_famd_var(df_famd, repel = TRUE)
+fviz_contrib(df_famd, "var", axes = 1)
+fviz_contrib(df_famd, "var", axes = 2)
+```
+### Distribution fitting
+```{r}
+#Import data and plot
+data("groundbeef", package = "fitdistrplus")
+my_data <- groundbeef $ serving
+plot(my_data, pch=20)
+ggplot(data=groundbeef) +
+  geom_histogram(mapping=aes(x=serving),bins=10,
+                 col="black",
+                 fill="grey")
+
+plotdist(my_data, histo = TRUE, demp = TRUE) #Empirical density
+descdist(my_data, discrete=FALSE, boot=500)
+```
+```{r}
+# Individually fit specific distributions
+fit_w  <- fitdist(my_data, "weibull")
+fit_g  <- fitdist(my_data, "gamma")
+fit_ln <- fitdist(my_data, "lnorm")
+summary(fit_ln)
+
+# Fit a list of named distributions and print the summary
+dists <- c("gamma","lnorm","weibull")
+fit <- list()
+for (i in 1:length(dists)){
+  fit[[i]]  <- fitdist(my_data, dists[i])
+}
+
+for (i in 1:length(dists)){
+  print(summary(fit[[i]]))
+}
+```
+
+```{r}
+
+# Plot the results from the individually
+#fitted distributions and compare
+par(mfrow=c(2,2))
+plot.legend <- c("Weibull", "lognormal", "gamma")
+denscomp(list(fit_w, fit_g, fit_ln), legendtext = plot.legend)
+cdfcomp (list(fit_w, fit_g, fit_ln), legendtext = plot.legend)
+qqcomp  (list(fit_w, fit_g, fit_ln), legendtext = plot.legend)
+ppcomp  (list(fit_w, fit_g, fit_ln), legendtext = plot.legend)
+```
+```{r}
+# Plot the results from the list of
+#fitted distributions and compare
+par(mfrow=c(2,2))
+plot.legend <- dists
+denscomp(fit, legendtext = plot.legend)
+cdfcomp (fit, legendtext = plot.legend)
+qqcomp  (fit, legendtext = plot.legend)
+ppcomp  (fit, legendtext = plot.legend)
+```
+
+

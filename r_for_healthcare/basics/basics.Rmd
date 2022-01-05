@@ -1,0 +1,274 @@
+---
+title: "Basic R functionality"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+### Libraries and setup
+
+```{r}
+library(readr)
+setwd("D:/Rdir/r_for_healthcare/basics/")
+```
+
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+### Reading/writing data
+
+```{r}
+ghq <- read.csv("GHQ.csv")
+ghq
+write.csv(ghq, "GHQ2.csv")
+a<-matrix(1:4,nrow=2,ncol=2)
+write.csv(a,"matrix.csv")
+```
+
+### Subscript and subset
+```{r}
+x <- seq(1,10,by=0.5)
+x[2]
+x[c(4,7)]
+y <- c(3,7,5,2,8)
+l <- y > 3
+l
+y[l]
+y[-c(2,4)]
+```
+
+```{r}
+z <- matrix(c(1,2,5,3,2,4,6,4,5,3,6,1), nrow=3, ncol=4, byrow=TRUE)
+print(z)
+z[2,]
+z[,4]
+z[2,4]
+z[c(1,2),]
+z[,c(1,2)]
+z[c(T,F,T),]
+```
+```{r}
+data <- as.data.frame(z)
+data
+dataOne <- data$V1
+dataOne
+attach(data)
+dataOne <- V1
+dataOne
+detach(data)
+dataOne <- data[c("V2", "V3")]
+dataOne
+dataTwo <- data[1:2, ]
+```
+```{r}
+dataFour <- data[which(data$V1 == 2 | data$V3 == 6), ]
+dataFour
+```
+### Merge and append data
+```{r}
+A <- matrix(c(1,2,3,4), nrow=2, ncol=2)
+A
+B <- c(5,6)
+C <- rbind(A,B)
+C
+D <- c(5,6)
+E <- cbind(A,D)
+E
+a <- c(1,2,3,4)
+b <- append(a,c(5,6))
+b
+a <- c(1,2,3,4)
+b <- append(a,c(5,6), after=2)
+b
+```
+```{r}
+clinical_trial1 <- data.frame(patient=1:100,
+                              age=signif(rnorm(100, mean=60, sd=6),
+                                         digits=2),
+                              treatment = gl(2,50,labels=c("Treatment", "Control")),
+                              centre = sample(paste("Centre", LETTERS[1:5]),
+                                                          100, replace=TRUE))
+clinical_trial1
+clinical_trial2 <- data.frame(patient = 1:100,
+                              BMI = rpois(100, lambda=25),
+                              gender = rep(gl(2,25,labels=c("Male", "Female"),ordered=FALSE),
+                                           times=2))
+clinical_trial2
+clinical_trial3 <- merge(clinical_trial1, clinical_trial2, by.x='patient', by.y='patient',
+                         all=TRUE)
+clinical_trial3[1:10,]
+GP <- rep(1:5, 20)
+clinical_trial4 <- cbind(clinical_trial3, GP)
+clinical_trial4
+row <- c(101,57, "Treatment", "Centre D", 26, "Male", 4)
+clinical_trial5 <- rbind(clinical_trial4, row)
+clinical_trial5[91:101,]
+```
+### Sorting data
+```{r}
+data(USArrests)
+attach(USArrests)
+USArrests[1:10,]
+```
+```{r}
+sort(UrbanPop)
+sort1_USarr <- USArrests[order(UrbanPop,Murder),]
+sort1_USarr[1:15,]
+sort2_USarr <- USArrests[order(UrbanPop, -Murder),]
+sort2_USarr[1:15,]
+```
+### Working with time/date
+```{r}
+df_birth <- data.frame(ID=1:10,dob=c("12/04/1976","16/06/1965","23/11/1985",
+                      "24/02/1973","01/04/1946","27/05/1983","09/08/2001",
+                      "30/03/1957","14/07/2007","19/12/1994"))
+df_birth
+attach(df_birth)
+dob_int <- as.Date(dob, "%d/%m/%Y")
+df_birth1 <- data.frame(dob_int, df_birth)
+df_birth1
+str(df_birth1)
+day <- weekdays(df_birth1$dob_int)
+num_days <- julian(df_birth1$dob_int)
+day
+num_days
+```
+```{r}
+time <- as.POSIXct(c("12/09/1971 23:49:00", "09/06/1970 04:07:57"), format='%d/%m/%Y %H:%M:%S')
+time
+time[2]-time[1]
+x <- c("06-07-19, 5:12am", "06-07-20, 5:15am", "06-07-21, 5:18pm", "06-07-22, 5:22am",  "06-07-23, 5:25am")
+dct <- as.POSIXct(x,format="%y-%m-%d, %I:%M%p")
+dlt <- strptime(x, format="%y-%m-%d, %I:%M%p")#%I = 12 hour clock, %p = am/pm format
+dct
+unclass(dct)
+dlt
+dlt$sec
+dlt$min
+dlt$mday
+dlt[4] - dlt[1]
+dlt[4]$min - dlt[1]$min
+dct[4] - dct[1]
+```
+
+### Tabulation
+```{r}
+clinical_trial <-
+    data.frame(patient = 1:100,
+               age = rnorm(100, mean = 60, sd = 6),
+               treatment = gl(2, 50,
+                 labels = c("Treatment", "Control")),
+               centre = sample(paste("Centre", LETTERS[1:5]),
+                 100, replace = TRUE))
+
+attach(clinical_trial)
+clinical_trial1[1:10, ]
+```
+```{r}
+table(treatment)
+table(treatment,centre,dnn=c("TREATMENTS", "CENTRES"))
+centres <- as.data.frame(table(treatment, centre), responseName='counts')
+centres
+```
+### For and while loops
+```{r}
+x <- 1:10
+y <- rep(0,length(x))
+for (i in 1:length(x)){
+  y[i] <- x[i] + i
+}
+y
+
+nums <- sample(1:50, 20, replace=T)
+x <- matrix(nums, nrow=4, ncol=5)
+x
+out <- matrix(rep(0,20), nrow=4,ncol=5)
+for (i in 1:nrow(x)){
+  for (j in 1:ncol(x)){
+    out[i,j] <- x[i,j] + i
+  }
+}
+out
+```
+
+```{r}
+y <- rep(0,10)
+i <- 1
+while (i<6){
+  y[i] <- x[i] + i
+  i <- i+1
+}
+print(y)
+```
+
+### Apply methods
+```{r}
+x <- matrix(rnorm(25), nrow=5, ncol=5)
+x
+y <- apply(x,2,mean) # colwise
+y
+
+a <- matrix(rnorm(25), nrow=5,ncol=5)
+b <- matrix(rnorm(25), nrow=5,ncol=5)
+c <- matrix(rnorm(25), nrow=5,ncol=5)
+matList <- list(a,b,c)
+matList
+y <- lapply(matList, "[",,2)
+y
+```
+```{r}
+y <- sapply(matList, "[", 1,2)
+y
+y <- sapply(matList, function(x) x+5)
+y
+z <- vapply(y, function(x) x+5, numeric(1))
+z
+a <- matrix(rnorm(25), nrow=5,ncol=5)
+a
+x <- mapply(function(x) x*2, a)
+x
+l <- list(1, list(2,3), 4,5,list(6,7,8), 9)
+l
+x <- rapply(l, function(x) (x*2)^3)
+x
+y <- rapply(l, function(x) (x*2)^3, how='list')
+y
+
+
+```
+```{r}
+a <- 1:5
+b <- c("F","M","M","F","F")
+b <- as.factor(b)
+c <- c(34,26,42,47,22)
+d <- cbind(a,b,c)
+data <- as.data.frame(d)
+data
+x <- tapply(data$c,b,sum,simplify=FALSE)
+x
+```
+### User-defnined functions
+```{r}
+name_pets <- function(person,cats,dogs){
+  result <- c(person,cats,dogs)
+  return(result)
+}
+name <- "Andrew"
+number_of_cats <- 4
+number_of_dogs <- 1
+details <- name_pets(name,number_of_cats,number_of_dogs)
+details
+```
+
