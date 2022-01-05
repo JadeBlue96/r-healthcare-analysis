@@ -1,0 +1,620 @@
+---
+title: "R Categorical modelling"
+output: html_notebook
+---
+
+### Libraries
+```{r}
+library(tidyverse)
+library(finalfit)
+library(patchwork)
+library(magrittr)
+library(broom)
+library(ggplot2)
+library(GGally)
+library(lme4)
+theme_set(theme_bw())
+```
+
+
+### Wor?ing with categorical variables
+```{r}
+meldata <- boot::melanoma
+meldata %>% glimpse()
+meldata %>% ff_glimpse()
+```
+#### Recode data
+```{r}
+meldata <- meldata %>% 
+  mutate(sex.factor =             # Make new variable  
+           sex %>%                # f?om existing variable
+           factor() %>%           # convert to factor
+           fct_recode(            # forcats function
+             "Female" = "0",      # new on left, old on right
+             "Male"   = "1") %>% 
+           ff_label("Sex"),     ? # Optional label for finalfit
+         
+         # same thing but more condensed code:
+         ulcer.factor = factor(ulcer) %>% 
+           fct_recode("Present" = "1",
+                      "Absent"  = "0") %>% 
+           ff_label("Ulcerated tumour"),
+ ?       
+         status.factor = factor(status) %>% 
+           fct_recode("Died melanoma"       = "1",
+                      "Alive"               = "2",
+                      "Died - other causes" = "3") %>% 
+           ff_label("Status"))
+```
+
+#### Conv?rting continuous to categorical
+```{r}
+# Summary of age
+meldata$age %>% 
+  summary()
+meldata %>% 
+  ggplot(aes(x = age)) + 
+  geom_histogram()
+
+# Equal intervals
+meldata <- meldata %>% 
+  mutate(
+    age.factor = 
+      age %>%
+      cut(4)
+  )
+meldata$age?factor %>%
+  summary()
+
+# Quantiles
+
+# meldata <- meldata %>% 
+#   mutate(
+#     age.factor = 
+#       age %>%
+#       Hmisc::cut2(g=4) # Note, cut2 comes from the Hmisc package
+#   )
+# meldata$age.factor %>% 
+#   summary()
+
+
+meldata <- meldata %>% 
+  muta?e(
+    age.factor = 
+      age %>%
+      cut(breaks = c(4,20,40,60,95), include.lowest = TRUE) %>% 
+      fct_recode(
+        "???20"      =  "[4,20]",
+        "21 to 40" = "(20,40]",
+        "41 to 60" = "(40,60]",
+        ">60"      = "(60,95]"
+      ) %>% 
+      ff_label("Age (years)")
+  )
+
+head(meldata$age.factor)
+```
+#### Plotting the data
+```{r}
+p1 <- meldata %>% 
+  ggplot(aes(? = ulcer.factor, fill = status.factor)) + 
+  geom_bar() + 
+  theme(legend.position = "none")
+
+p2 <- meldata %>% 
+  ggplot(aes(x = ulcer.factor, fill = status.factor)) + 
+  geom_bar(position = "fill") + 
+  ylab("proportion")
+
+p1 + p2
+
+p1 <- meldata %>% 
+  g?plot(aes(x = ulcer.factor, fill = status.factor)) + 
+  geom_bar(position = position_stack(reverse = TRUE)) + 
+  theme(legend.position = "none")
+
+p2 <- meldata %>% 
+  ggplot(aes(x = ulcer.factor, fill = status.factor)) + 
+  geom_bar(position = position_fill?reverse = TRUE)) + 
+  ylab("proportion")
+
+p1 + p2
+
+p1 <- meldata %>% 
+  ggplot(aes(x = ulcer.factor, fill=status.factor)) + 
+  geom_bar(position = position_stack(reverse = TRUE)) +
+  facet_grid(sex.factor ~ age.factor) + 
+  theme(legend.position = "none")
+?p2 <- meldata %>% 
+  ggplot(aes(x = ulcer.factor, fill=status.factor)) + 
+  geom_bar(position = position_fill(reverse = TRUE)) +
+  facet_grid(sex.factor ~ age.factor)+ 
+  theme(legend.position = "bottom")
+
+p1 / p2
+```
+#### Group factor levels - fct_collaps?()
+```{r}
+meldata <- meldata %>%
+  mutate(
+    status_dss = fct_collapse(
+      status.factor,
+      "Alive" = c("Alive", "Died - other causes"))
+  )
+```
+#### Change order of values in factor - fct_relevel()
+```{r}
+# dss - disease specific survival
+meldata?status_dss %>% levels()
+
+meldata <- meldata %>% 
+  mutate(status_dss = status_dss %>%
+           fct_relevel("Alive")
+         )
+meldata$status_dss %>% levels()
+```
+#### Summarizing factors
+```{r}
+meldata %>% 
+  summary_factorlist(dependent   = "status_dss?, 
+                     explanatory = "ulcer.factor")
+
+meldata %>% 
+  summary_factorlist(dependent = "status_dss", 
+                     explanatory = 
+                       c("ulcer.factor", "age.factor", 
+                         "sex.factor", "thicknes?")
+  )
+```
+#### Chi-squared test (independence)
+```{r}
+table(meldata$ulcer.factor, meldata$status_dss) # both give same result
+with(meldata, table(ulcer.factor, status_dss))
+
+meldata %$%
+  table(ulcer.factor, status_dss) %>% 
+  prop.table(margin = 1)     #?1: row, 2: column etc.
+
+meldata %$%        # note $ sign here
+  table(ulcer.factor, status_dss) %>% 
+  chisq.test()
+
+meldata %$%        # note $ sign here
+  table(ulcer.factor, status_dss) %>% 
+  chisq.test() %>% 
+  tidy()
+```
+
+#### Fisher's exact test
+```?r}
+meldata %$%        # note $ sign here
+  table(age.factor, status_dss) %>% 
+  chisq.test()
+
+meldata %$%        # note $ sign here
+  table(age.factor, status_dss) %>% 
+  fisher.test()
+```
+```{r}
+meldata %>% 
+  summary_factorlist(dependent   = "status_dss"? 
+                     explanatory = "ulcer.factor",
+                     p = TRUE)
+
+meldata %>% 
+  summary_factorlist(dependent = "status_dss", 
+                     explanatory = 
+                       c("ulcer.factor", "age.factor", 
+                  ?      "sex.factor", "thickness"),
+                     p = TRUE)
+
+meldata %>% 
+  summary_factorlist(dependent = "status_dss", 
+                     explanatory = 
+                       c("ulcer.factor", "age.factor", 
+                         "sex.factor"? "thickness"),
+                     p = TRUE,
+                     p_cat = "fisher")
+
+meldata %>% 
+  summary_factorlist(dependent = "status_dss", 
+                     explanatory = 
+                       c("ulcer.factor", "age.factor", 
+                 ?       "sex.factor", "thickness"),
+                     p = TRUE,
+                     p_cat = "fisher",
+                     digits = 
+                       c(1, 1, 4, 2), #1: mean/median, 2: SD/IQR 
+                                      # 3: p-value, 4:?count percentage
+                     na_include = TRUE, # include missing in results/test
+                     add_dependent_label = TRUE
+  )
+```
+#### Exercise
+```{r}
+meldata %>% 
+  summary_factorlist(dependent   = "status.factor", 
+                     e?planatory = c("ulcer.factor", "age.factor", 
+                         "sex.factor", "thickness"),
+                     cont='median')
+
+meldata %>%
+  count(ulcer.factor, status.factor) %>%
+  group_by(status.factor) %>%
+  mutate(total = sum(n)) %>%
+  mutate(?ercentage = round(100*n/total, 1)) %>% 
+  mutate(count_perc = paste0(n, " (", percentage, ")")) %>% 
+  select(-total, -n, -percentage) %>% 
+  spread(status.factor, count_perc)
+```
+### Logistic regression
+```{r}
+### Preparing the data
+melanoma <- boot::mela?oma
+melanoma <- melanoma %>% 
+  mutate(sex.factor = factor(sex) %>%          
+           fct_recode("Female" = "0",
+                      "Male"   = "1") %>% 
+           ff_label("Sex"),   
+         
+         ulcer.factor = factor(ulcer) %>% 
+           fc?_recode("Present" = "1",
+                      "Absent"  = "0") %>% 
+           ff_label("Ulcerated tumour"),
+         
+         age  = ff_label(age,  "Age (years)"),
+         year = ff_label(year, "Year"),
+         
+         status.factor = factor(status)?%>% 
+           fct_recode("Died melanoma"  = "1",
+                      "Alive" = "2",
+                      "Died - other" = "3") %>% 
+           fct_relevel("Alive") %>% 
+           ff_label("Status"),
+         
+         t_stage.factor = 
+           thi?kness %>% 
+           cut(breaks = c(0, 1.0, 2.0, 4.0, 
+                          max(thickness, na.rm=TRUE)),
+               include.lowest = TRUE)
+  )
+
+melanoma$t_stage.factor %>% levels()
+melanoma <- melanoma %>% 
+  mutate(
+    t_stage.factor = 
+      f?t_recode(t_stage.factor,
+                 "T1" = "[0,1]",
+                 "T2" = "(1,2]",
+                 "T3" = "(2,4]",
+                 "T4" = "(4,17.4]") %>% 
+      ff_label("T-stage")
+  )
+```
+```{r}
+melanoma %>% 
+  ggplot(aes(x = time/365)) + 
+  geo?_histogram() + 
+  facet_grid(. ~ status.factor)
+
+# 5-year mortality
+melanoma <- melanoma %>% 
+  mutate(
+    mort_5yr = 
+      if_else((time/365) < 5 & 
+                (status == 1), 
+              "Yes",          # then
+              "No") %>%       # els?
+      fct_relevel("No") %>% 
+      ff_label("5-year survival")
+  )
+
+p1 <- melanoma %>% 
+  ggplot(aes(x = ulcer.factor, fill = mort_5yr)) + 
+  geom_bar() + 
+  theme(legend.position = "none")
+
+p2 <- melanoma %>% 
+  ggplot(aes(x = ulcer.factor, fill = mort_5?r)) + 
+  geom_bar(position = "fill") + 
+  ylab("proportion")
+
+p1 + p2
+```
+
+```{r}
+dependent <- "ulcer.factor"
+explanatory <- c("age", "sex.factor", "year", "t_stage.factor")
+melanoma %>% 
+  summary_factorlist(dependent, explanatory, p = TRUE,
+             ?       add_dependent_label = TRUE)
+```
+#### Model assumptions
+```{r}
+
+#### Linearity of continuous variables to the response
+melanoma %>% 
+  mutate(
+    mort_5yr.num = as.numeric(mort_5yr) - 1
+  ) %>% 
+  select(mort_5yr.num, age, year) %>% 
+  pivot_longer(?ll_of(c("age", "year")), names_to = "predictors") %>% 
+  ggplot(aes(x = value, y = mort_5yr.num)) + 
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  facet_wrap(~predictors, scales = "free_x")
+
+#### Multicolinearity
+explanatory ?- c("ulcer.factor", "age", "sex.factor", 
+                "year", "t_stage.factor")
+melanoma %>% 
+  remove_labels() %>%  # ggpairs doesn't work well with labels
+  ggpairs(columns = explanatory)
+
+##### Continuous to continuous
+select_explanatory <- c("age",?"year")
+melanoma %>% 
+  remove_labels() %>% 
+  ggpairs(columns = select_explanatory)
+
+##### Continuous to categorical
+select_explanatory <- c("age", "ulcer.factor", 
+                       "sex.factor", "t_stage.factor")
+
+melanoma %>% 
+  select(all_of(sele?t_explanatory)) %>% 
+  pivot_longer(-age) %>% # pivots all but age into two columns: name and value
+  ggplot(aes(value, age)) + 
+  geom_boxplot() +
+  facet_wrap(~name, scale = "free", ncol = 3) +
+  coord_flip()
+
+##### Categorical to categorical
+select_expl?natory <- c("ulcer.factor", "sex.factor", "t_stage.factor")
+
+melanoma %>% 
+  select(one_of(select_explanatory)) %>% 
+  pivot_longer(-sex.factor) %>% 
+  ggplot(aes(value, fill = sex.factor)) + 
+  geom_bar(position = "fill") +
+  ylab("proportion") +
+  facet_?rap(~name, scale = "free", ncol = 2) +
+  coord_flip()
+
+```
+
+```{r}
+#### Variance inflation factor
+# A common rule of thumb is that if this is greater than 5-10 for any variable, then multicollinearity may exist. The model should be further explored and the?terms removed or reduced.
+
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "age", "sex.factor", 
+                "year", "t_stage.factor")
+melanoma %>% 
+  glmmulti(dependent, explanatory) %>%
+  car::vif()
+```
+
+##### Fitting logistic regression
+```?r}
+fit1 <- glm(mort_5yr ~ ulcer.factor, data = melanoma, family = binomial)
+summary(fit1)
+```
+
+```{r}
+coef(fit1) %>% exp()
+confint(fit1) %>% exp()
+fit1 %>% 
+  tidy(conf.int = TRUE, exp = TRUE)
+fit1 %>% 
+  glance()
+```
+```{r}
+dependent <- "mort_5yr"
+explana?ory <- "ulcer.factor"
+melanoma %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+```
+```{r}
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "age", "sex.factor", "t_stage.factor")
+fit2 = melanoma %>% 
+  finalfit(dependent, explanatory, metric? = TRUE)
+fit2
+```
+```{r}
+melanoma <- melanoma %>% 
+  mutate(
+    age.factor = cut(age,
+                     breaks = c(0, 25, 50, 75, 100)) %>% 
+      ff_label("Age (years)"))
+
+# Add this to relevel:
+# fct_relevel("(50,75]")
+
+melanoma %>% 
+  finalfit(depen?ent, c("ulcer.factor", "age.factor"), metrics = TRUE)
+
+### quadratic term
+glm(mort_5yr ~ ulcer.factor  +I(age^2) + age, 
+    data = melanoma, family = binomial) %>% 
+  summary()
+
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "I(age^2)", "age")
+m?lanoma %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+
+```
+```{r}
+## Reduced model
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "age.factor", "sex.factor", "t_stage.factor")
+explanatory_multi <- c("ulcer.factor", "sex.factor", "t_stage?factor")
+
+melanoma %>% 
+  finalfit(dependent, explanatory, explanatory_multi, 
+           keep_models = TRUE, metrics = TRUE)
+
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "sex.factor", "t_stage.factor")
+explanatory_multi <- c("ulcer.factor", "?_stage.factor")
+
+melanoma %>% 
+  finalfit(dependent, explanatory, explanatory_multi, 
+           keep_models = TRUE, metrics = TRUE)
+
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "t_stage.factor")
+explanatory_multi <- c("ulcer.factor*t_stage.fa?tor")
+melanoma %>% 
+  finalfit(dependent, explanatory, explanatory_multi, 
+           keep_models = TRUE, metrics = TRUE)
+
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.factor", "age.factor", 
+                "sex.factor", "t_stage.factor")
+explanatory_m?lti <- c("ulcer.factor", "t_stage.factor")
+melanoma %>% 
+  finalfit(dependent, explanatory, explanatory_multi, metrics = TRUE)
+```
+
+```{r}
+## odds-ratio plot
+dependent <- "mort_5yr"
+explanatory_multi <- c("ulcer.factor", "t_stage.factor")
+melanoma %>% 
+  o?_plot(dependent, explanatory_multi,
+          breaks = c(0.5, 1, 2, 5, 10, 25),
+          table_text_size = 3.5,
+          title_text_size = 16)
+```
+#### Correlated groups of observations
+```{r}
+# Simulate random hospital identifier
+set.seed(1)
+melanoma <-?melanoma %>% 
+    mutate(hospital_id = sample(1:4, 205, replace = TRUE))
+
+melanoma <- melanoma %>%
+    mutate(hospital_id = c(rep(1:3, 50), rep(4, 55)))
+
+melanoma %>% 
+    mutate(
+    mort_5yr.num = as.numeric(mort_5yr) - 1 # Convert factor to 0 and 1
+  ) ?>% 
+  ggplot(aes(x = as.numeric(t_stage.factor), y = mort_5yr.num)) +
+  geom_jitter(width = 0.1, height = 0.1) +
+  geom_smooth(method = 'loess', se = FALSE) + 
+  facet_wrap(~hospital_id) + 
+  labs(x= "T-stage", y = "Mortality (5 y)")
+```
+```{r}
+melanoma %>? 
+  glmer(mort_5yr ~ t_stage.factor + (1 | hospital_id), 
+        data = ., family = "binomial") %>% 
+  summary()
+
+print('**********************************')
+dependent <- "mort_5yr"
+explanatory <- "t_stage.factor"
+random_effect <- "hospital_id" # Is the s?me as:
+random_effect <- "(1 | hospital_id)"
+melanoma %>% 
+  finalfit(dependent, explanatory, 
+           random_effect = random_effect,
+           metrics = TRUE)
+print('**********************************')
+dependent <- "mort_5yr"
+explanatory <- c("ulcer.f?ctor", "age.factor", 
+                "sex.factor", "t_stage.factor")
+explanatory_multi <- c("ulcer.factor", "t_stage.factor")
+random_effect <- "hospital_id"
+melanoma %>% 
+  finalfit(dependent, explanatory, explanatory_multi, random_effect, 
+           kee?_models = TRUE,
+           metrics = TRUE)
+```
+##### Exercise
+```{r}
+## Recode
+melanoma <- melanoma %>% 
+  mutate(sex.factor = factor(sex) %>%          
+           fct_recode("Female" = "0",
+                      "Male"   = "1") %>% 
+           ff_label("S?x"),   
+         
+         ulcer.factor = factor(ulcer) %>% 
+           fct_recode("Present" = "1",
+                      "Absent"  = "0") %>% 
+           ff_label("Ulcerated tumour"),
+         
+         age  = ff_label(age,  "Age (years)"),
+         year ? ff_label(year, "Year"),
+         
+         status.factor = factor(status) %>% 
+           fct_recode("Died melanoma"  = "1",
+                      "Alive" = "2",
+                      "Died - other" = "3") %>% 
+           fct_relevel("Alive") %>% 
+       ?   ff_label("Status"),
+         
+         t_stage.factor = 
+           thickness %>% 
+           cut(breaks = c(0, 1.0, 2.0, 4.0, 
+                          max(thickness, na.rm=TRUE)),
+               include.lowest = TRUE)
+  )
+
+# Plot
+p1 <- melanoma %>% 
+? ggplot(aes(x = sex.factor, fill = mort_5yr)) + 
+  geom_bar() + 
+  theme(legend.position = "none")
+
+p2 <- melanoma %>% 
+  ggplot(aes(x = sex.factor, fill = mort_5yr)) + 
+  geom_bar(position = "fill") + 
+  ylab("proportion")
+
+p1 + p2
+```
+```{r}
+## Recode T-?tage first
+melanoma <- melanoma %>% 
+  mutate(
+    t_stage.factor = 
+      fct_recode(t_stage.factor,
+                 T1 = "[0,1]",
+                 T2 = "(1,2]",
+                 T3 = "(2,4]",
+                 T4 = "(4,17.4]") %>% 
+      ff_label("T-stag?")
+  )
+
+dependent = "sex.factor"
+explanatory = c("age", "t_stage.factor", "ulcer.factor")
+melanoma %>% 
+  summary_factorlist(dependent, explanatory, p = TRUE, na_include = TRUE,
+                     cont = "median")
+
+# Men have more T4 tumours and they are?more likely to be ulcerated. 
+```
+```{r}
+dependent = "mort_5yr"
+explanatory = c("sex.factor", "age", "t_stage.factor", "ulcer.factor")
+melanoma %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+
+# c-statistic = 0.798
+# In multivariable model, male vs?female OR 1.26 (0.57-2.76, p=0.558).
+# No relationship after accounting for T-stage and tumour ulceration. 
+# Sex is confounded by these two variables. 
+```
+```{r}
+dependent = "mort_5yr"
+explanatory = c("sex.factor", "age", "t_stage.factor", "ulcer.factor"?
+melanoma %>% 
+  or_plot(dependent, explanatory)
+```
+

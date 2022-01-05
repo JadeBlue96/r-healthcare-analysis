@@ -1,0 +1,562 @@
+---
+title: "R Continuous Data Modelling"
+output: html_notebook
+---
+
+### Libraries
+```{r}
+library(tidyverse)
+library(finalfit)
+library(gapminder)
+library(broom)
+library(ggfortify)
+```
+
+### Working with continuous variables
+```{r}
+gapdata <- gapminder
+glimpse(gapdata)
+missing_glimpse(gapdata)
+ff_glimpse(gapdata)
+```
+```{r}
+gapdata %>% 
+  filter(year %in% c(2002, 2007)) %>%
+  ggplot(aes(x = lifeExp)) +       # remember aes()
+  geom_histogram(bins = 20) +      # histogram with 20 bars
+  facet_grid(year ~ continent)
+
+gapdata %>% 
+  filter(year %in% c(2002, 2007)) %>%
+  ggplot(aes(sample = lifeExp)) +      # Q-Q plot requires 'sample'
+  geom_qq() +                          # defaults to normal distribution
+  geom_qq_line(colour = "blue") +      # add the theoretical line
+  facet_grid(year ~ continent)
+
+gapdata %>% 
+  filter(year %in% c(2002, 2007)) %>%
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_boxplot() +
+  facet_wrap(~ year)
+
+gapdata %>%  
+  filter(year %in% c(2002, 2007)) %>%
+  ggplot(aes(x = factor(year), y = lifeExp)) +
+  geom_boxplot(aes(fill = continent)) +     # add colour to boxplots
+  geom_jitter(alpha = 0.4) +                # alpha = transparency
+  facet_wrap(~ continent, ncol = 5) +       # spread by continent
+  theme(legend.position = "none") +         # remove legend
+  xlab("Year") +                            # label x-axis
+  ylab("Life expectancy (years)") +         # label y-axis
+  ggtitle(
+    "Life expectancy by continent in 2002 v 2007") # add title
+```
+### Compare means of two groups
+```{r}
+ttest_data <- gapdata %>%                    # save as object ttest_data
+  filter(year == 2007) %>%                   # 2007 only
+  filter(continent %in% c("Asia", "Europe")) # Asia/Europe only
+
+ttest_result <- ttest_data %>%               # example using pipe
+  t.test(lifeExp ~ continent, data = .)      # note data = ., see below
+ttest_result
+ttest_result$p.value
+ttest_result$conf.int
+
+paired_data <- gapdata %>%             # save as object paired_data
+  filter(year %in% c(2002, 2007)) %>%  # 2002 and 2007 only
+  filter(continent == "Asia")          # Asia only
+
+paired_data %>%      
+  ggplot(aes(x = year, y = lifeExp, 
+             group = country)) +       # for individual country lines
+  geom_line()
+paired_table <- paired_data %>%        # save object paired_data
+  select(country, year, lifeExp) %>%   # select vars interest
+  pivot_wider(names_from = year,       # put years in columns
+              values_from = lifeExp) %>% 
+  mutate(
+    dlifeExp = `2007` - `2002`         # difference in means
+  )
+paired_table
+paired_table %>% summarise( mean(dlifeExp) )
+paired_data %>% 
+  t.test(lifeExp ~ year, data = ., paired = TRUE)
+```
+### Compare mean of one group: one sample t-test
+```{r}
+gapdata %>% 
+  filter(year == 2007) %>%          # 2007 only
+  group_by(continent) %>%           # split by continent
+  do(                               # dplyr function
+    t.test(.$lifeExp, mu = 77) %>%  # compare mean to 77 years 
+      tidy()                        # tidy into tibble
+  )
+
+# note that we're using dlifeExp
+# so the differences we calculated above
+t.test(paired_table$dlifeExp, mu = 0)
+```
+### Compare means of more than 2 groups
+```{r}
+gapdata %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% 
+           c("Americas", "Europe", "Asia")) %>% 
+  ggplot(aes(x = continent, y=lifeExp)) +
+  geom_boxplot()
+
+aov_data <- gapdata %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% c("Americas", "Europe", "Asia"))
+
+fit = aov(lifeExp ~ continent, data = aov_data) 
+summary(fit)
+gapdata %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% c("Americas", "Europe", "Asia")) %>% 
+  aov(lifeExp~continent, data = .) %>% 
+  tidy()
+autoplot(fit)
+```
+### Multiple testing
+```{r}
+pairwise.t.test(aov_data$lifeExp, aov_data$continent, 
+                p.adjust.method = "bonferroni")
+pairwise.t.test(aov_data$lifeExp, aov_data$continent, 
+                p.adjust.method = "fdr")
+```
+### Non-parametric tests
+```{r}
+africa2002 <- gapdata %>%              # save as africa2002
+  filter(year == 2002) %>%             # only 2002
+  filter(continent == "Africa") %>%    # only Africa
+  select(country, lifeExp) %>%         # only these variables
+  mutate(
+    lifeExp_log = log(lifeExp)         # log life expectancy
+  )
+head(africa2002)                       # inspect
+
+africa2002 %>% 
+  # pivot lifeExp and lifeExp_log values to same column (for easy plotting):
+  pivot_longer(contains("lifeExp")) %>% 
+  ggplot(aes(x = value)) +             
+  geom_histogram(bins = 15) +          # make histogram
+  facet_wrap(~name, scales = "free")    # facet with axes free to vary
+
+africa_data <- gapdata %>%                          
+  filter(year %in% c(1982, 2007)) %>%      # only 1982 and 2007
+  filter(continent %in% c("Africa"))       # only Africa
+
+p1 <- africa_data %>%                      # save plot as p1
+  ggplot(aes(x = lifeExp)) + 
+  geom_histogram(bins = 15) +
+  facet_wrap(~year)
+
+p2 <- africa_data %>%                      # save plot as p2
+  ggplot(aes(sample = lifeExp)) +          # `sample` for Q-Q plot
+  geom_qq() + 
+  geom_qq_line(colour = "blue") + 
+  facet_wrap(~year)
+
+p3 <- africa_data %>%                      # save plot as p3
+  ggplot(aes(x = factor(year),             # try without factor(year) to
+             y = lifeExp)) +               # see the difference
+  geom_boxplot(aes(fill = factor(year))) + # colour boxplot
+  geom_jitter(alpha = 0.4) +               # add data points
+  theme(legend.position = "none")          # remove legend
+
+library(patchwork)                         # great for combining plots
+p1 / p2 | p3
+
+africa_data %>% 
+  wilcox.test(lifeExp ~ year, data = .)
+
+gapdata %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% c("Americas", "Europe", "Asia")) %>% 
+  kruskal.test(lifeExp~continent, data = .) %>% 
+  tidy()
+```
+### Finalfit approach
+```{r}
+dependent <- "year"
+explanatory <- c("lifeExp", "pop", "gdpPercap")
+africa_data %>%         
+  mutate(
+    year = factor(year)
+  ) %>% 
+  summary_factorlist(dependent, explanatory,
+                     cont = "median", p = TRUE)
+
+dependent <- "year"
+explanatory <- c("lifeExp", "pop", "gdpPercap")
+africa_data %>%         
+  mutate(
+    year = factor(year)
+  ) %>% 
+  summary_factorlist(dependent, explanatory,
+                     cont_nonpara =  c(1, 3),         # variable 1&3 are non-parametric
+                     cont_range = TRUE,               # lower and upper quartile
+                     p = TRUE,                        # include hypothesis test
+                     p_cont_para = "t.test",          # use t.test/aov for parametric
+                     add_row_totals = TRUE,           # row totals
+                     include_row_missing_col = FALSE, # missing values row totals
+                     add_dependent_label = TRUE) 
+```
+### Exercises
+```{r}
+asia_data <- gapdata %>%                          
+  filter(continent %in% c("Asia"))              
+
+p1 <- asia_data %>%                              
+  ggplot(aes(x = lifeExp)) + 
+  geom_histogram(bins = 15)
+
+p2 <- asia_data %>%                          
+  ggplot(aes(sample = lifeExp)) +             # sample =  for Q-Q plot
+  geom_qq() + 
+  geom_qq_line(colour = "blue")
+
+p3 <- asia_data %>%                              
+  ggplot(aes(x = year, y = lifeExp)) +  
+  geom_boxplot(aes(fill = factor(year))) +  # optional: year as factor
+  geom_jitter(alpha = 0.4) +                    
+  theme(legend.position = "none")               
+
+library(patchwork)                              
+p1 / p2 | p3
+```
+```{r}
+## Select any 2 years in any continent and perform a *t*-test to 
+## determine whether mean life expectancy is significantly different. 
+## Remember to plot your data first.
+
+asia_2years <- asia_data %>%   
+  filter(year %in% c(1952, 1972)) 
+
+p1 <- asia_2years %>%   
+  ggplot(aes(x = lifeExp)) + 
+  geom_histogram(bins = 15) +                 
+  facet_wrap(~year)                          
+
+p2 <- asia_2years %>%   
+  ggplot(aes(sample = lifeExp)) +              
+  geom_qq() + 
+  geom_qq_line(colour = "blue") + 
+  facet_wrap(~year)                        
+
+p3 <- asia_2years %>%         
+  ggplot(aes(x = factor(year), y = lifeExp)) + 
+  geom_boxplot(aes(fill = factor(year))) +      
+  geom_jitter(alpha = 0.4) +                    
+  theme(legend.position = "none")               
+
+library(patchwork)                              
+p1 / p2 | p3
+
+asia_2years %>% 
+  t.test(lifeExp ~ year, data = .)
+```
+
+```{r}
+## In 2007, in which continents did mean life expectancy differ from 70
+gapdata %>% 
+  filter(year == 2007) %>% 
+  group_by(continent) %>%
+  do(
+    t.test(.$lifeExp, mu = 70) %>%
+      tidy()                         
+  )
+```
+
+```{r}
+## Use Kruskal-Wallis to determine if the mean population changed 
+## significantly through the 1990s/2000s in individual continents. 
+
+gapdata %>% 
+  filter(year >= 1990) %>% 
+  ggplot(aes(x = factor(year), y = pop)) + 
+  geom_boxplot() + 
+  facet_wrap(~continent)
+
+gapdata %>% 
+  filter(year >= 1990) %>% 
+  group_by(continent) %>% 
+  do(
+    kruskal.test(pop ~ year, data = .) %>%
+      tidy()
+  )
+```
+### Linear regression
+
+#### Fit simple models
+```{r}
+theme_set(theme_bw())
+gapdata <- gapminder
+gapdata %>%                        
+  filter(continent == "Europe") %>%    # Europe only
+  ggplot(aes(x = year, y = lifeExp)) + # lifeExp~year  
+  geom_point() +                       # plot points
+  facet_wrap(~ country) +              # facet by country
+  scale_x_continuous(
+    breaks = c(1960, 2000)) +          # adjust x-axis 
+  geom_smooth(method = "lm")           # add regression lines
+
+gapdata %>% 
+  filter(country %in% c("Turkey", "United Kingdom")) %>% 
+  ggplot(aes(x = year, y = lifeExp, colour = country)) + 
+  geom_point()
+
+# United Kingdom
+fit_uk <- gapdata %>%
+  filter(country == "United Kingdom") %>% 
+  lm(lifeExp~year, data = .)
+
+fit_uk %>% 
+  summary()
+
+# Turkey
+fit_turkey <- gapdata %>%
+  filter(country == "Turkey") %>% 
+  lm(lifeExp~year, data = .)
+
+fit_turkey %>% 
+  summary()
+```
+```{r}
+fit_uk$coefficients
+fit_turkey$coefficients
+
+gapdata <- gapdata %>% 
+  mutate(year_from1952 = year - 1952)
+fit_uk <- gapdata %>%
+  filter(country == "United Kingdom") %>% 
+  lm(lifeExp ~ year_from1952, data = .)
+fit_turkey <- gapdata %>%
+  filter(country == "Turkey") %>% 
+  lm(lifeExp ~ year_from1952, data = .)
+fit_uk$coefficients
+fit_turkey$coefficients
+```
+```{r}
+fit_uk %>% tidy()
+fit_uk %>% glance()
+```
+
+```{r}
+# UK and Turkey dataset
+gapdata_UK_T <- gapdata %>% 
+  filter(country %in% c("Turkey", "United Kingdom"))
+
+fit_both1 <- gapdata_UK_T %>% 
+  lm(lifeExp ~ year_from1952, data = .)
+fit_both1
+
+gapdata_UK_T %>% 
+  mutate(pred_lifeExp = predict(fit_both1)) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(aes(x = year, y = pred_lifeExp))
+
+gapdata_UK_T %>% 
+  mutate(pred_lifeExp = predict(fit_both1)) %>% 
+  select(country, year, lifeExp, pred_lifeExp) %>% 
+  group_by(country) %>%
+  slice(1, 6, 12)
+
+fit_both2 <- gapdata_UK_T %>% 
+  lm(lifeExp ~ year_from1952 + country, data = .)
+fit_both2
+gapdata_UK_T %>% 
+  mutate(pred_lifeExp = predict(fit_both2)) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(aes(x = year, y = pred_lifeExp, colour = country))
+
+fit_both3 <- gapdata_UK_T %>% 
+  lm(lifeExp ~ year_from1952 * country, data = .)
+fit_both3
+gapdata_UK_T %>% 
+  mutate(pred_lifeExp = predict(fit_both3)) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(aes(x = year, y = pred_lifeExp, colour = country))
+```
+```{r}
+mod_stats1 <- glance(fit_both1)
+mod_stats2 <- glance(fit_both2)
+mod_stats3 <- glance(fit_both3)
+bind_rows(mod_stats1, mod_stats2, mod_stats3)
+
+list(fit_both1, fit_both2, fit_both3) %>% 
+  map_df(glance)
+```
+
+```{r}
+autoplot(fit_both3)
+```
+#### Fit more complex models
+```{r}
+wcgsdata <- finalfit::wcgs #press F1 here for details
+wcgsdata
+wcgsdata %>%
+  ggplot(aes(y = sbp, x = weight,
+             colour = personality_2L)) +   # Personality type
+  geom_point(alpha = 0.2) +                # Add transparency
+  geom_smooth(method = "lm", se = FALSE)
+```
+```{r}
+dependent <- "sbp"
+explanatory <- "personality_2L"
+fit_sbp1 <- wcgsdata %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+fit_sbp1
+
+dependent <- "sbp"
+explanatory <- c("weight", "personality_2L")
+fit_sbp2 <- wcgsdata %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+fit_sbp2
+
+dependent <- "sbp"
+explanatory <- c("personality_2L", "weight", "age", 
+                "height", "chol", "smoking") 
+fit_sbp3 <- wcgsdata %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+fit_sbp3
+
+wcgsdata <- wcgsdata %>% 
+  mutate(
+    bmi = ((weight*0.4536) / (height*0.0254)^2) %>% 
+      ff_label("BMI")
+  )
+
+explanatory <- c("personality_2L", "bmi", "age", 
+                "chol", "smoking") 
+
+fit_sbp4 <- wcgsdata %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+fit_sbp4
+```
+```{r}
+dependent <- "sbp"
+explanatory       <- c("personality_2L", "bmi", "age", 
+                      "chol", "smoking") 
+explanatory_multi <- c("bmi", "personality_2L", "age", 
+                      "chol") 
+fit_sbp5 <- wcgsdata %>% 
+  finalfit(dependent, explanatory, 
+           explanatory_multi, 
+           keep_models = TRUE, metrics = TRUE)
+fit_sbp5
+```
+```{r}
+dependent <- "sbp"
+explanatory       <- c("personality_2L", "bmi", "age", 
+                      "chol", "smoking") 
+explanatory_multi <- c("bmi", "personality_2L", "age", 
+                      "chol") 
+fit_sbp5 <- wcgsdata %>% 
+  ff_plot(dependent, explanatory_multi)
+
+dependent <- "sbp"
+explanatory_multi <- c("bmi", "personality_2L", "age", 
+                      "chol") 
+wcgsdata %>%
+  lmmulti(dependent, explanatory_multi) %>% 
+  autoplot()
+```
+### Exercises
+```{r}
+gapdata %>% 
+  filter(continent == "Europe") %>% 
+  ggplot(aes(x = year, y = gdpPercap)) + 
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(country ~ .)
+
+# Countries not linear: Ireland, Montenegro, Serbia.
+
+# Add quadratic term
+gapdata %>% 
+  filter(continent == "Europe") %>% 
+  ggplot(aes(x = year, y = gdpPercap)) + 
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ poly(x, 2)") +
+  facet_wrap(country ~ .)
+```
+```{r}
+# Plot first
+gapdata %>% 
+  filter(country %in% c("Albania", "Austria")) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = gdpPercap, colour= country))
+
+# Fit average line between two countries. 
+fit_both1 = gapdata %>% 
+  filter(country %in% c("Albania", "Austria")) %>% 
+  lm(gdpPercap ~ year, data = .)
+
+gapdata %>% 
+  filter(country %in% c("Albania", "Austria")) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = gdpPercap, colour = country)) +
+  geom_line(aes(x = year, y = predict(fit_both1)))
+
+# Fit average line between two countries. 
+fit_both3 = gapdata %>% 
+  filter(country %in% c("Albania", "Austria")) %>% 
+  lm(gdpPercap ~ year * country, data = .)
+
+gapdata %>% 
+  filter(country %in% c("Albania", "Austria")) %>% 
+  ggplot() + 
+  geom_point(aes(x = year, y = gdpPercap, colour = country)) +
+  geom_line(aes(x = year, y = predict(fit_both3), group = country))
+
+# You can use the regression equation by hand to work out the difference
+summary(fit_both3)
+
+# Or pass newdata to predict to estimate the two points of interest
+gdp_1980 <- predict(fit_both3, newdata = data.frame(
+  country = c("Albania", "Austria"),
+  year = c(1980, 1980))
+)
+gdp_1980
+gdp_1980[2] - gdp_1980[1]
+```
+```{r}
+# Plot data first
+wcgsdata %>% 
+  ggplot(aes(x = age, y = chol))+
+  geom_point() + 
+  geom_smooth(method = "lm", formula = "y~x")
+
+# Weak positive relationship
+
+# Simple linear regression
+dependent <- "chol"
+explanatory <- "age" 
+wcgsdata %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+wcgsdata
+
+# For each year of age, cholesterol increases by 0.7 mg/100 ml. 
+# This gradient differs from zero. 
+
+# Is this effect independent of other available variables?
+
+# Make BMI as above
+dependent <- "chol"
+explanatory <- c( "age", "bmi", "sbp", "smoking", "personality_2L") 
+wcgsdata %>% 
+  mutate(
+    bmi = ((weight*0.4536) / (height*0.0254)^2) %>% 
+      ff_label("BMI")
+  ) %>% 
+  finalfit(dependent, explanatory, metrics = TRUE)
+# Effect size is reduced, but still present. 
+# Model poorly describes data, R2=0.033.
+```
+

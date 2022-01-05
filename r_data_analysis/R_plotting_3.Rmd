@@ -1,0 +1,333 @@
+---
+title: "R Plotting"
+output: html_notebook
+---
+
+### Libraries
+```{r}
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(patchwork)
+```
+
+
+## Plot types
+```{r}
+glimpse(gapminder)
+gapminder$year %>% unique()
+gapminder$country %>% n_distinct()
+gapminder$continent %>% unique()
+gapdata2007 <- gapminder %>% 
+  filter(year == 2007)
+
+gapdata <- gapminder
+```
+### ggplot
+```{r}
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp))
+
+# scatter
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_point()
+
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, colour = continent)) +
+  geom_point()
+
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, colour = continent)) +
+  geom_point(shape = 1)
+
+# subplots per category
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, colour = continent)) +
+  geom_point(shape = 1) +
+  facet_wrap(~continent)
+
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap, y = lifeExp, colour = continent)) +
+  geom_point(shape = 1) +
+  facet_wrap(~pop > 50000000)
+
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap/1000, y = lifeExp, colour = continent)) +
+  geom_point(shape = 1) +
+  facet_wrap(~continent) +
+  theme_bw()
+```
+### Set theme
+```{r}
+theme_set(theme_bw())
+```
+### Scatter plots
+```{r}
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap/1000, y = lifeExp, size = pop)) +
+  geom_point()
+
+gapdata2007 %>% 
+  ggplot(aes(x = gdpPercap/1000, y = lifeExp, size = pop)) +
+  geom_point(shape = 1, alpha = 0.5)
+```
+### Line/time-series plots
+```{r}
+gapdata %>% 
+  filter(country == "United Kingdom") %>% 
+  ggplot(aes(x = year, y = lifeExp)) +
+  geom_line()
+
+gapdata %>% 
+  ggplot(aes(x = year, y = lifeExp)) +
+  geom_line()
+
+gapdata %>% 
+  ggplot(aes(x = year, y = lifeExp, group = country, colour=continent)) +
+  facet_wrap(~continent) +
+  scale_colour_brewer(palette='Paired')+
+  geom_line()
+```
+### Bar plots
+```{r}
+gapdata2007 %>% 
+  filter(country %in% c("United Kingdom", "France", "Germany")) %>% 
+  ggplot(aes(x = country, y = lifeExp)) +
+  geom_col()
+
+gapdata2007 %>% 
+  count(continent)
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent)) +
+  geom_bar()
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent, colour = country)) +
+  geom_bar(fill = NA) +
+  theme(legend.position = "none")
+
+gapdata2007 %>% 
+  ggplot(aes(x = "Global", fill = continent)) + 
+  geom_bar()
+
+gapdata2007 %>%
+  filter(year == 2007) %>%
+  filter(continent == "Europe") %>% 
+  ggplot(aes(x = fct_reorder(country, lifeExp), y = lifeExp)) +
+  coord_flip() +
+  geom_col(fill = NA, colour='deepskyblue')
+```
+### Histograms
+```{r}
+gapdata2007 %>% 
+  ggplot(aes(x = lifeExp)) +
+  geom_histogram(binwidth = 10)
+```
+### Box plots
+```{r}
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_boxplot()
+```
+### Multiple plots
+```{r}
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_boxplot() +
+  geom_point()
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp, colour = continent)) +
+  geom_boxplot() +
+  geom_jitter()
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_boxplot() +
+  geom_jitter(aes(colour = continent))
+
+label_data <- gapdata2007 %>% 
+  group_by(continent) %>% 
+  filter(lifeExp == max(lifeExp)) %>% 
+  select(country, continent, lifeExp)
+label_data
+
+gapdata2007 %>% 
+  ggplot(aes(x = continent, y = lifeExp)) +
+  # First geom - boxplot
+  geom_boxplot() +
+  # Second geom - jitter with its own aes(colour = )
+  geom_jitter(aes(colour = continent)) +
+  # Third geom - label, with its own dataset (label_data) and aes(label = )
+  geom_label(data = label_data, aes(label = country))
+```
+### others
+```{r}
+gapdata %>% 
+  filter(continent == "Europe") %>% 
+  ggplot(aes(y      = fct_reorder(country, lifeExp, .fun=max),
+             x      = lifeExp,
+             colour = year)) +
+  geom_point(shape = 15, size = 2) +
+  scale_colour_distiller(palette = "Greens", direction = 1) +
+  theme_bw()
+
+gapdata2007 %>% 
+  group_by(continent) %>% 
+  mutate(country_number = seq_along(country)) %>% 
+  ggplot(aes(x = continent)) +
+  geom_bar(aes(colour = continent), fill = NA, show.legend = FALSE) +
+  geom_text(aes(y = country_number, label = country), vjust = 1)+
+  geom_label(aes(label = continent), y = -1) +
+  theme_void()
+```
+## Fine-tuning plots
+```{r}
+p0 <- gapminder %>% 
+  filter(year == 2007) %>% 
+  ggplot(aes(y = lifeExp, x = gdpPercap, colour = continent)) +
+  geom_point(alpha = 0.3) +
+  theme_bw() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette = "Set1")
+
+p0
+```
+### Scales
+```{r}
+p1 <- p0 + scale_x_log10()
+p1
+p2 <- p0 + expand_limits(y = 0)
+p3 <- p0 + expand_limits(y = c(0, 100))
+p4 <- p0 +
+  expand_limits(y = c(0, 100)) +
+  coord_cartesian(expand = FALSE)
+
+p1 + p2 + p3 + p4 + plot_annotation(tag_levels = "1", tag_prefix = "p")
+
+p5 <- p0 +
+  coord_cartesian(ylim = c(70, 85), xlim = c(20000, 40000)) 
+p5
+p6 <- p0 +
+  scale_y_continuous(limits = c(70, 85)) +
+  scale_x_continuous(limits = c(20000, 40000)) 
+p5 + labs(tag = "p5") + p6 + labs(tag = "p6")
+
+# calculating the maximum value to be included in the axis breaks:
+max_value = gapminder %>% 
+  filter(year == 2007) %>%
+  summarise(max_lifeExp = max(lifeExp)) %>% 
+  pull(max_lifeExp) %>% 
+  round(1)
+# using scale_y_continuous(breaks = ...):
+p7 <-  p0 +
+  coord_cartesian(ylim = c(0, 100), expand = 0) +
+  scale_y_continuous(breaks = c(18, 50, max_value))
+# we may also include custom labels for our breaks:
+p8 <-  p0 +
+  coord_cartesian(ylim = c(0, 100), expand = 0) +
+  scale_y_continuous(breaks = c(18, 50, max_value), labels = c("Adults", "50", "MAX"))
+p7 + labs(tag = "p7") + p8 + labs(tag = "p8")
+```
+### Colours
+```{r}
+p9 <- p0 +
+  scale_color_brewer(palette = "Paired")
+p10 <- p0 +
+  scale_color_brewer("Continent - \n one of 5", palette = "Paired")
+p9 + labs(tag = "p9") + p10 + labs(tag = "p10")
+
+p11 <- p0 +
+  scale_color_manual(values = c("red", "green", "blue", "purple", "pink"))
+p12 <- p0 +
+  scale_color_manual(values = c("#8dd3c7", "#ffffb3", "#bebada",
+                                "#fb8072", "#80b1d3"))
+p11 + labs(tag = "p11") + p12 + labs(tag = "p12")
+```
+### Titles and labels
+```{r}
+p13 <- p0 +
+  labs(x = "Gross domestic product per capita",
+       y = "Life expectancy",
+       title = "Health and economics",
+       subtitle = "Gapminder dataset, 2007",
+       caption = Sys.Date(),
+       tag = "p13")
+
+p13
+
+```
+```{r}
+p14 <- p0 +
+  annotate("text",
+           x = 25000,
+           y = 50,
+           label = "No points here!")
+p15 <- p0 +
+  annotate("label",
+           x = 25000,
+           y = 50,
+           label = "No points here!")
+p16 <- p0 +
+  annotate("label",
+           x = 25000, 
+           y = 50,
+           label = "No points here!", 
+           hjust = 0)
+
+p14 + labs(tag = "p14") + (p15 + labs(tag = "p15"))/ (p16 + labs(tag = "p16"))
+
+# a value we made up for this example
+# a real analysis would get it from the linear model object
+fit_glance <- tibble(r.squared = 0.7693465)
+
+
+plot_rsquared <- paste0(
+  "R^2 == ",
+  fit_glance$r.squared %>% round(2))
+
+
+p17 <- p0 +
+  annotate("text",
+           x = 25000, 
+           y = 50,
+           label = plot_rsquared, parse = TRUE,
+           hjust = 0)
+
+p17 + labs(tag = "p17")
+```
+### Overall look - theme()
+```{r}
+p18 <-  p0 +
+  theme(axis.text.y = element_text(colour = "green", size = 14),
+        axis.text.x = element_text(colour = "red",  angle = 45, vjust = 0.5),
+        axis.title  = element_text(colour = "blue", size = 16)
+        )
+
+p18 + labs(tag = "p18")
+
+p19 <- p0 +
+  theme(legend.position = "none")
+p20 <- p0 +
+  theme(legend.position      = c(1,0), #bottom-right corner
+        legend.justification = c(1,0))
+p19 + labs(tag = "p19") + p20 + labs(tag = "p20")
+
+p21 <- p0 +
+  guides(colour = guide_legend(ncol = 2)) +
+  theme(legend.position = "top") # moving to the top optional
+
+p21 + labs(tag = "p21")
+```
+### Saving plot
+```{r}
+ggsave(p0, file = "my_saved_plot.pdf", width = 5, height = 4)
+ggsave(p0, file = "my_saved_plot_larger.pdf", width = 10, height = 8)
+```
+

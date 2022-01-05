@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html -->
+<html lang="" xml:lang="" data-darkreader-mode="dynamic" data-darkreader-scheme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style class="darkreader darkreader--fallback" media="screen"></style><style class="darkreader darkreader--text" media="screen"></style><style class="darkreader darkreader--invert" media="screen">.jfk-bubble.gtx-bubble, .captcheck_answer_label > input + img, span#closed_text > img[src^="https://www.gstatic.com/images/branding/googlelogo"], span[data-href^="https://www.hcaptcha.com/"] > #icon, #bit-notification-bar-iframe, ::-webkit-calendar-picker-indicator {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
+}</style><style class="darkreader darkreader--inline" media="screen">[data-darkreader-inline-bgcolor] {
+  background-color: var(--darkreader-inline-bgcolor) !important;
+}
+[data-darkreader-inline-bgimage] {
+  background-image: var(--darkreader-inline-bgimage) !important;
+}
+[data-darkreader-inline-border] {
+  border-color: var(--darkreader-inline-border) !important;
+}
+[data-darkreader-inline-border-bottom] {
+  border-bottom-color: var(--darkreader-inline-border-bottom) !important;
+}
+[data-darkreader-inline-border-left] {
+  border-left-color: var(--darkreader-inline-border-left) !important;
+}
+[data-darkreader-inline-border-right] {
+  border-right-color: var(--darkreader-inline-border-right) !important;
+}
+[data-darkreader-inline-border-top] {
+  border-top-color: var(--darkreader-inline-border-top) !important;
+}
+[data-darkreader-inline-boxshadow] {
+  box-shadow: var(--darkreader-inline-boxshadow) !important;
+}
+[data-darkreader-inline-color] {
+  color: var(--darkreader-inline-color) !important;
+}
+[data-darkreader-inline-fill] {
+  fill: var(--darkreader-inline-fill) !important;
+}
+[data-darkreader-inline-stroke] {
+  stroke: var(--darkreader-inline-stroke) !important;
+}
+[data-darkreader-inline-outline] {
+  outline-color: var(--darkreader-inline-outline) !important;
+}
+[data-darkreader-inline-stopcolor] {
+  stop-color: var(--darkreader-inline-stopcolor) !important;
+}</style><style class="darkreader darkreader--variables" media="screen">:root {
+   --darkreader-neutral-background: #121415;
+   --darkreader-neutral-text: #cdc9c5;
+   --darkreader-selection-background: #0049a2;
+   --darkreader-selection-text: #dcdbd8;
+}</style><style class="darkreader darkreader--root-vars" media="screen"></style><style class="darkreader darkreader--user-agent" media="screen">html {
+    background-color: #17191a !important;
+}
+html, body, input, textarea, select, button {
+    background-color: #17191a;
+}
+html, body, input, textarea, select, button {
+    border-color: #6d6659;
+    color: #dcdbd8;
+}
+a {
+    color: #308af2;
+}
+table {
+    border-color: #505659;
+}
+::placeholder {
+    color: #a9a299;
+}
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    background-color: #515600 !important;
+    color: #dcdbd8 !important;
+}
+::-webkit-scrollbar {
+    background-color: #1e2122;
+    color: #a29c91;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #424649;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #53595d;
+}
+::-webkit-scrollbar-thumb:active {
+    background-color: #444a4d;
+}
+::-webkit-scrollbar-corner {
+    background-color: #17191a;
+}
+::selection {
+    background-color: #0049a2 !important;
+    color: #dcdbd8 !important;
+}
+::-moz-selection {
+    background-color: #0049a2 !important;
+    color: #dcdbd8 !important;
+}</style>
+
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chapter 3 Summarising data | R for Health Data Science</title>
+  <meta name="description" content="An introductory book for health data science using R.">
+  <meta name="generator" content="bookdown 0.20.2 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Chapter 3 Summarising data | R for Health Data Science">
+  <meta property="og:type" content="book">
+  
+  <meta property="og:image" content="images/healthyr_book_cover.png">
+  <meta property="og:description" content="An introductory book for health data science using R.">
+  <meta name="github-repo" content="SurgicalInformatics/healthyr_book/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Chapter 3 Summarising data | R for Health Data Science">
+  
+  <meta name="twitter:description" content="An introductory book for health data science using R.">
+  <meta name="twitter:image" content="images/healthyr_book_cover.png">
+
+<meta name="author" content="Ewen Harrison and Riinu Pius">
+
+
+<meta name="date" content="2021-01-15">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="https://argoshare.is.ed.ac.uk/healthyr_book/joining-multiple-datasets.html">
+<link rel="next" href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data.html">
+<script src="./R_basics_1_files/jquery.min.js.download"></script><meta name="darkreader" content="0766d00d540046a1a9d494b2975b9039"><style class="darkreader darkreader--override" media="screen">.vimvixen-hint {
+    background-color: #754f00 !important;
+    border-color: #cda712 !important;
+    color: #e7dcbe !important;
+}
+::placeholder {
+    opacity: 0.5 !important;
+}
+a[href="https://coinmarketcap.com/"] > svg[width="94"][height="16"] > path {
+    fill: var(--darkreader-neutral-text) !important;
+}
+#edge-translate-panel-body,
+.MuiTypography-body1 {
+    color: var(--darkreader-neutral-text) !important;
+}
+gr-main-header {
+    background-color: #0e3745 !important;
+}</style>
+<link href="./R_basics_1_files/style.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-table.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-bookdown.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-highlight.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-search.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-fontsettings.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+<link href="./R_basics_1_files/plugin-clipboard.css" rel="stylesheet"><style class="darkreader darkreader--sync" media="screen"></style>
+
+
+
+
+
+
+
+
+
+<script src="./R_basics_1_files/empty-anchor.js.download"></script>
+<script src="./R_basics_1_files/kePrint.js.download"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style><style class="darkreader darkreader--sync" media="screen"></style>
+
+<link rel="stylesheet" href="./R_basics_1_files/style(1).css" type="text/css"><style class="darkreader darkreader--sync" media="screen"></style>
+<script type="text/javascript" src="./R_basics_1_files/MathJax.js.download"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style class="darkreader darkreader--sync" media="screen"></style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style class="darkreader darkreader--sync" media="screen"></style></head>
+
+<body><div id="MathJax_Message" style="display: none;"></div>
+
+
+
+  <div class="book without-animation with-summary   font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary"><div class="book-search" role="search"><label for="search-box" aria-hidden="false" hidden="hidden">Type to search</label><input id="search-box" type="search" class="form-control" placeholder="Type to search (Enter for navigation)" title="Use Enter or the &lt;Down&gt; key to navigate to the next match, or the &lt;Up&gt; key to the previous match"></div>
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://argoshare.is.ed.ac.uk/healthyr_book/">R for Health Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/index.html"><i class="fa fa-check"></i>Preface</a><ul style="display: none;">
+<li class="chapter" data-level="" data-path="why-read-this-book.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/why-read-this-book.html"><i class="fa fa-check"></i>Why read this book</a></li>
+<li class="chapter" data-level="" data-path="contributors.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/contributors.html"><i class="fa fa-check"></i>Contributors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="about-the-authors.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/about-the-authors.html"><i class="fa fa-check"></i>About the Authors</a></li>
+<li class="part"><span><b>I Data wrangling and visualisation</b></span></li>
+<li class="chapter" data-level="1" data-path="why-we-love-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/why-we-love-r.html"><i class="fa fa-check"></i><b>1</b> Why we love R</a><ul style="display: none;">
+<li class="chapter" data-level="1.1" data-path="chap01-what-script.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap01-what-script.html"><i class="fa fa-check"></i><b>1.1</b> Help, what’s a script?</a></li>
+<li class="chapter" data-level="1.2" data-path="what-is-rstudio.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/what-is-rstudio.html"><i class="fa fa-check"></i><b>1.2</b> What is RStudio?</a></li>
+<li class="chapter" data-level="1.3" data-path="getting-started.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/getting-started.html"><i class="fa fa-check"></i><b>1.3</b> Getting started</a></li>
+<li class="chapter" data-level="1.4" data-path="getting-help.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/getting-help.html"><i class="fa fa-check"></i><b>1.4</b> Getting help</a></li>
+<li class="chapter" data-level="1.5" data-path="work-in-a-project.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/work-in-a-project.html"><i class="fa fa-check"></i><b>1.5</b> Work in a Project</a></li>
+<li class="chapter" data-level="1.6" data-path="restart-r-regularly.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/restart-r-regularly.html"><i class="fa fa-check"></i><b>1.6</b> Restart R regularly</a></li>
+<li class="chapter" data-level="1.7" data-path="notation-throughout-this-book.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/notation-throughout-this-book.html"><i class="fa fa-check"></i><b>1.7</b> Notation throughout this book</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="r-basics.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/r-basics.html"><i class="fa fa-check"></i><b>2</b> R basics</a><ul style="display: none;">
+<li class="chapter" data-level="2.1" data-path="chap02-h2-reading-data-into-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-h2-reading-data-into-r.html"><i class="fa fa-check"></i><b>2.1</b> Reading data into R</a><ul style="display: none;">
+<li class="chapter" data-level="2.1.1" data-path="chap02-h2-reading-data-into-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-h2-reading-data-into-r.html#import-dataset-interface"><i class="fa fa-check"></i><b>2.1.1</b> Import Dataset interface</a></li>
+<li class="chapter" data-level="2.1.2" data-path="chap02-h2-reading-data-into-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-h2-reading-data-into-r.html#reading-in-the-global-burden-of-disease-example-dataset"><i class="fa fa-check"></i><b>2.1.2</b> Reading in the Global Burden of Disease example dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="chap02-vartypes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-vartypes.html"><i class="fa fa-check"></i><b>2.2</b> Variable types and why we care</a><ul style="display: none;">
+<li class="chapter" data-level="2.2.1" data-path="chap02-vartypes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-vartypes.html#numeric-variables-continuous"><i class="fa fa-check"></i><b>2.2.1</b> Numeric variables (continuous)</a></li>
+<li class="chapter" data-level="2.2.2" data-path="chap02-vartypes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-vartypes.html#character-variables"><i class="fa fa-check"></i><b>2.2.2</b> Character variables</a></li>
+<li class="chapter" data-level="2.2.3" data-path="chap02-vartypes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-vartypes.html#factor-variables-categorical"><i class="fa fa-check"></i><b>2.2.3</b> Factor variables (categorical)</a></li>
+<li class="chapter" data-level="2.2.4" data-path="chap02-vartypes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-vartypes.html#datetime-variables"><i class="fa fa-check"></i><b>2.2.4</b> Date/time variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html"><i class="fa fa-check"></i><b>2.3</b> Objects and functions</a><ul style="display: none;">
+<li class="chapter" data-level="2.3.1" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#data-frametibble"><i class="fa fa-check"></i><b>2.3.1</b> <code>data frame/tibble</code></a></li>
+<li class="chapter" data-level="2.3.2" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#naming-objects"><i class="fa fa-check"></i><b>2.3.2</b> Naming objects</a></li>
+<li class="chapter" data-level="2.3.3" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#function-and-its-arguments"><i class="fa fa-check"></i><b>2.3.3</b> Function and its arguments</a></li>
+<li class="chapter" data-level="2.3.4" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#working-with-objects"><i class="fa fa-check"></i><b>2.3.4</b> Working with objects</a></li>
+<li class="chapter" data-level="2.3.5" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#and"><i class="fa fa-check"></i><b>2.3.5</b> <code>&lt;-</code> and <code>=</code></a></li>
+<li class="chapter" data-level="2.3.6" data-path="chap02-objects-functions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap02-objects-functions.html#recap-object-function-input-argument"><i class="fa fa-check"></i><b>2.3.6</b> Recap: object, function, input, argument</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="pipe-.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/pipe-.html"><i class="fa fa-check"></i><b>2.4</b> Pipe - <code>%&gt;%</code></a><ul style="display: none;">
+<li class="chapter" data-level="2.4.1" data-path="pipe-.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/pipe-.html#using-.-to-direct-the-pipe"><i class="fa fa-check"></i><b>2.4.1</b> Using . to direct the pipe</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="operators-for-filtering-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/operators-for-filtering-data.html"><i class="fa fa-check"></i><b>2.5</b> Operators for filtering data</a><ul style="display: none;">
+<li class="chapter" data-level="2.5.1" data-path="operators-for-filtering-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/operators-for-filtering-data.html#worked-examples"><i class="fa fa-check"></i><b>2.5.1</b> Worked examples</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="the-combine-function-c.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-combine-function-c.html"><i class="fa fa-check"></i><b>2.6</b> The combine function: <code>c()</code></a></li>
+<li class="chapter" data-level="2.7" data-path="missing-values-nas-and-filters.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/missing-values-nas-and-filters.html"><i class="fa fa-check"></i><b>2.7</b> Missing values (NAs) and filters</a></li>
+<li class="chapter" data-level="2.8" data-path="creating-new-columns-mutate.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/creating-new-columns-mutate.html"><i class="fa fa-check"></i><b>2.8</b> Creating new columns - <code>mutate()</code></a><ul style="display: none;">
+<li class="chapter" data-level="2.8.1" data-path="creating-new-columns-mutate.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/creating-new-columns-mutate.html#worked-exampleexercise"><i class="fa fa-check"></i><b>2.8.1</b> Worked example/exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="2.9" data-path="conditional-calculations-if-else.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/conditional-calculations-if-else.html"><i class="fa fa-check"></i><b>2.9</b> Conditional calculations - <code>if_else()</code></a></li>
+<li class="chapter" data-level="2.10" data-path="create-labels-paste.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/create-labels-paste.html"><i class="fa fa-check"></i><b>2.10</b> Create labels - <code>paste()</code></a></li>
+<li class="chapter" data-level="2.11" data-path="joining-multiple-datasets.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/joining-multiple-datasets.html"><i class="fa fa-check"></i><b>2.11</b> Joining multiple datasets</a><ul style="display: none;">
+<li class="chapter" data-level="2.11.1" data-path="joining-multiple-datasets.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/joining-multiple-datasets.html#further-notes-about-joins"><i class="fa fa-check"></i><b>2.11.1</b> Further notes about joins</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter active" data-level="3" data-path="summarising-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html"><i class="fa fa-check"></i><b>3</b> Summarising data</a><ul style="display: block;">
+<li class="chapter" data-level="3.1" data-path="get-the-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data.html"><i class="fa fa-check"></i><b>3.1</b> Get the data</a></li>
+<li class="chapter" data-level="3.2" data-path="plot-the-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data.html"><i class="fa fa-check"></i><b>3.2</b> Plot the data</a></li>
+<li class="chapter" data-level="3.3" data-path="aggregating-group-by-summarise.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/aggregating-group-by-summarise.html" title="3.3 Aggregating: group_by(), summarise()"><i class="fa fa-check"></i><b>3.3</b> Aggregating: <code>group_by()</code>, <code>summarise()</code></a></li>
+<li class="chapter" data-level="3.4" data-path="add-new-columns-mutate.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/add-new-columns-mutate.html"><i class="fa fa-check"></i><b>3.4</b> Add new columns: <code>mutate()</code></a><ul style="display: none;">
+<li class="chapter" data-level="3.4.1" data-path="add-new-columns-mutate.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/add-new-columns-mutate.html#percentages-formatting-percent"><i class="fa fa-check"></i><b>3.4.1</b> Percentages formatting: <code>percent()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="summarise-vs-mutate.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summarise-vs-mutate.html"><i class="fa fa-check"></i><b>3.5</b> <code>summarise()</code> vs <code>mutate()</code></a></li>
+<li class="chapter" data-level="3.6" data-path="common-arithmetic-functions-sum-mean-median-etc-.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/common-arithmetic-functions-sum-mean-median-etc-.html" title="3.6 Common arithmetic functions - sum(), mean(), median(), etc."><i class="fa fa-check"></i><b>3.6</b> Common arithmetic functions - <code>sum()</code>, <code>mean()</code>, <code>median()</code>, etc.</a></li>
+<li class="chapter" data-level="3.7" data-path="select-columns.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/select-columns.html"><i class="fa fa-check"></i><b>3.7</b> <code>select()</code> columns</a></li>
+<li class="chapter" data-level="3.8" data-path="reshaping-data-long-vs-wide-format.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/reshaping-data-long-vs-wide-format.html" title="3.8 Reshaping data - long vs wide format"><i class="fa fa-check"></i><b>3.8</b> Reshaping data - long vs wide format</a><ul style="display: none;">
+<li class="chapter" data-level="3.8.1" data-path="reshaping-data-long-vs-wide-format.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/reshaping-data-long-vs-wide-format.html#pivot-values-from-rows-into-columns-wider"><i class="fa fa-check"></i><b>3.8.1</b> Pivot values from rows into columns (wider)</a></li>
+<li class="chapter" data-level="3.8.2" data-path="reshaping-data-long-vs-wide-format.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/reshaping-data-long-vs-wide-format.html#pivot-values-from-columns-to-rows-longer"><i class="fa fa-check"></i><b>3.8.2</b> Pivot values from columns to rows (longer)</a></li>
+<li class="chapter" data-level="3.8.3" data-path="reshaping-data-long-vs-wide-format.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/reshaping-data-long-vs-wide-format.html#separate-a-column-into-multiple-columns"><i class="fa fa-check"></i><b>3.8.3</b> <code>separate()</code> a column into multiple columns</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="arrange-rows.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/arrange-rows.html"><i class="fa fa-check"></i><b>3.9</b> <code>arrange()</code> rows</a><ul style="display: none;">
+<li class="chapter" data-level="3.9.1" data-path="arrange-rows.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/arrange-rows.html#factor-levels"><i class="fa fa-check"></i><b>3.9.1</b> Factor levels</a></li>
+</ul></li>
+<li class="chapter" data-level="3.10" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html"><i class="fa fa-check"></i><b>3.10</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="3.10.1" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html#exercise---pivot_wider"><i class="fa fa-check"></i><b>3.10.1</b> Exercise - <code>pivot_wider()</code></a></li>
+<li class="chapter" data-level="3.10.2" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html#exercise---group_by-summarise"><i class="fa fa-check"></i><b>3.10.2</b> Exercise - <code>group_by()</code>, <code>summarise()</code></a></li>
+<li class="chapter" data-level="3.10.3" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html#exercise---full_join-percent"><i class="fa fa-check"></i><b>3.10.3</b> Exercise - <code>full_join()</code>, <code>percent()</code></a></li>
+<li class="chapter" data-level="3.10.4" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html#exercise---mutate-summarise"><i class="fa fa-check"></i><b>3.10.4</b> Exercise - <code>mutate()</code>, <code>summarise()</code></a></li>
+<li class="chapter" data-level="3.10.5" data-path="exercises.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises.html#exercise---filter-summarise-pivot_wider"><i class="fa fa-check"></i><b>3.10.5</b> Exercise - <code>filter()</code>, <code>summarise()</code>, <code>pivot_wider()</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="chap04-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap04-h1.html"><i class="fa fa-check"></i><b>4</b> Different types of plots</a><ul style="display: none;">
+<li class="chapter" data-level="4.1" data-path="chap04-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap04-data.html"><i class="fa fa-check"></i><b>4.1</b> Get the data</a></li>
+<li class="chapter" data-level="4.2" data-path="chap04-gganatomy.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap04-gganatomy.html"><i class="fa fa-check"></i><b>4.2</b> Anatomy of ggplot explained</a></li>
+<li class="chapter" data-level="4.3" data-path="set-your-theme-grey-vs-white.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/set-your-theme-grey-vs-white.html"><i class="fa fa-check"></i><b>4.3</b> Set your theme - grey vs white</a></li>
+<li class="chapter" data-level="4.4" data-path="scatter-plotsbubble-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scatter-plotsbubble-plots.html"><i class="fa fa-check"></i><b>4.4</b> Scatter plots/bubble plots</a></li>
+<li class="chapter" data-level="4.5" data-path="line-plotstime-series-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/line-plotstime-series-plots.html"><i class="fa fa-check"></i><b>4.5</b> Line plots/time series plots</a><ul style="display: none;">
+<li class="chapter" data-level="4.5.1" data-path="line-plotstime-series-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/line-plotstime-series-plots.html#chap04-ex-lineplot"><i class="fa fa-check"></i><b>4.5.1</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html"><i class="fa fa-check"></i><b>4.6</b> Bar plots</a><ul style="display: none;">
+<li class="chapter" data-level="4.6.1" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html#summarised-data"><i class="fa fa-check"></i><b>4.6.1</b> Summarised data</a></li>
+<li class="chapter" data-level="4.6.2" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html#countable-data"><i class="fa fa-check"></i><b>4.6.2</b> Countable data</a></li>
+<li class="chapter" data-level="4.6.3" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html#colour-vs-fill"><i class="fa fa-check"></i><b>4.6.3</b> <code>colour</code> vs <code>fill</code></a></li>
+<li class="chapter" data-level="4.6.4" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html#chap04-proportions"><i class="fa fa-check"></i><b>4.6.4</b> Proportions</a></li>
+<li class="chapter" data-level="4.6.5" data-path="bar-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/bar-plots.html#chap04-ex-barplot"><i class="fa fa-check"></i><b>4.6.5</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="histograms.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/histograms.html"><i class="fa fa-check"></i><b>4.7</b> Histograms</a></li>
+<li class="chapter" data-level="4.8" data-path="box-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/box-plots.html"><i class="fa fa-check"></i><b>4.8</b> Box plots</a></li>
+<li class="chapter" data-level="4.9" data-path="multiple-geoms-multiple-aes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/multiple-geoms-multiple-aes.html"><i class="fa fa-check"></i><b>4.9</b> Multiple geoms, multiple <code>aes()</code></a><ul style="display: none;">
+<li class="chapter" data-level="4.9.1" data-path="multiple-geoms-multiple-aes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/multiple-geoms-multiple-aes.html#worked-example---three-geoms-together"><i class="fa fa-check"></i><b>4.9.1</b> Worked example - three geoms together</a></li>
+</ul></li>
+<li class="chapter" data-level="4.10" data-path="all-other-types-of-plots.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/all-other-types-of-plots.html"><i class="fa fa-check"></i><b>4.10</b> All other types of plots</a></li>
+<li class="chapter" data-level="4.11" data-path="solutions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/solutions.html"><i class="fa fa-check"></i><b>4.11</b> Solutions</a></li>
+<li class="chapter" data-level="4.12" data-path="extra-advanced-examples.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/extra-advanced-examples.html"><i class="fa fa-check"></i><b>4.12</b> Extra: Advanced examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="finetuning.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/finetuning.html"><i class="fa fa-check"></i><b>5</b> Fine tuning plots</a><ul style="display: none;">
+<li class="chapter" data-level="5.1" data-path="get-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data-1.html"><i class="fa fa-check"></i><b>5.1</b> Get the data</a></li>
+<li class="chapter" data-level="5.2" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html"><i class="fa fa-check"></i><b>5.2</b> Scales</a><ul style="display: none;">
+<li class="chapter" data-level="5.2.1" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html#logarithmic"><i class="fa fa-check"></i><b>5.2.1</b> Logarithmic</a></li>
+<li class="chapter" data-level="5.2.2" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html#expand-limits"><i class="fa fa-check"></i><b>5.2.2</b> Expand limits</a></li>
+<li class="chapter" data-level="5.2.3" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html#zoom-in"><i class="fa fa-check"></i><b>5.2.3</b> Zoom in</a></li>
+<li class="chapter" data-level="5.2.4" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html#exercise"><i class="fa fa-check"></i><b>5.2.4</b> Exercise</a></li>
+<li class="chapter" data-level="5.2.5" data-path="scales.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/scales.html#axis-ticks"><i class="fa fa-check"></i><b>5.2.5</b> Axis ticks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="colours.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/colours.html"><i class="fa fa-check"></i><b>5.3</b> Colours</a><ul style="display: none;">
+<li class="chapter" data-level="5.3.1" data-path="colours.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/colours.html#using-the-brewer-palettes"><i class="fa fa-check"></i><b>5.3.1</b> Using the Brewer palettes:</a></li>
+<li class="chapter" data-level="5.3.2" data-path="colours.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/colours.html#legend-title"><i class="fa fa-check"></i><b>5.3.2</b> Legend title</a></li>
+<li class="chapter" data-level="5.3.3" data-path="colours.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/colours.html#choosing-colours-manually"><i class="fa fa-check"></i><b>5.3.3</b> Choosing colours manually</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="titles-and-labels.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/titles-and-labels.html"><i class="fa fa-check"></i><b>5.4</b> Titles and labels</a><ul style="display: none;">
+<li class="chapter" data-level="5.4.1" data-path="titles-and-labels.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/titles-and-labels.html#annotation"><i class="fa fa-check"></i><b>5.4.1</b> Annotation</a></li>
+<li class="chapter" data-level="5.4.2" data-path="titles-and-labels.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/titles-and-labels.html#annotation-with-a-superscript-and-a-variable"><i class="fa fa-check"></i><b>5.4.2</b> Annotation with a superscript and a variable</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="overall-look-theme.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/overall-look-theme.html"><i class="fa fa-check"></i><b>5.5</b> Overall look - <code>theme()</code></a><ul style="display: none;">
+<li class="chapter" data-level="5.5.1" data-path="overall-look-theme.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/overall-look-theme.html#text-size"><i class="fa fa-check"></i><b>5.5.1</b> Text size</a></li>
+<li class="chapter" data-level="5.5.2" data-path="overall-look-theme.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/overall-look-theme.html#legend-position"><i class="fa fa-check"></i><b>5.5.2</b> Legend position</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="saving-your-plot.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/saving-your-plot.html"><i class="fa fa-check"></i><b>5.6</b> Saving your plot</a></li>
+</ul></li>
+<li class="part"><span><b>II Data analysis</b></span></li>
+<li class="chapter" data-level="6" data-path="chap06-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-h1.html" title="6 Working with continuous outcome variables"><i class="fa fa-check"></i><b>6</b> Working with continuous outcome variables</a><ul style="display: none;">
+<li class="chapter" data-level="6.1" data-path="continuous-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/continuous-data.html"><i class="fa fa-check"></i><b>6.1</b> Continuous data</a></li>
+<li class="chapter" data-level="6.2" data-path="the-question.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-question.html"><i class="fa fa-check"></i><b>6.2</b> The Question</a></li>
+<li class="chapter" data-level="6.3" data-path="chap06-h2-check.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-h2-check.html"><i class="fa fa-check"></i><b>6.3</b> Get and check the data</a></li>
+<li class="chapter" data-level="6.4" data-path="plot-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data-1.html"><i class="fa fa-check"></i><b>6.4</b> Plot the data</a><ul style="display: none;">
+<li class="chapter" data-level="6.4.1" data-path="plot-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data-1.html#chap06-h3-hist-plot"><i class="fa fa-check"></i><b>6.4.1</b> Histogram</a></li>
+<li class="chapter" data-level="6.4.2" data-path="plot-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data-1.html#chap06-h3-qq-plot"><i class="fa fa-check"></i><b>6.4.2</b> Quantile-quantile (Q-Q) plot</a></li>
+<li class="chapter" data-level="6.4.3" data-path="plot-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data-1.html#boxplot"><i class="fa fa-check"></i><b>6.4.3</b> Boxplot</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="compare-the-means-of-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-two-groups.html"><i class="fa fa-check"></i><b>6.5</b> Compare the means of two groups</a><ul style="display: none;">
+<li class="chapter" data-level="6.5.1" data-path="compare-the-means-of-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-two-groups.html#t-test"><i class="fa fa-check"></i><b>6.5.1</b> <em>t</em>-test</a></li>
+<li class="chapter" data-level="6.5.2" data-path="compare-the-means-of-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-two-groups.html#two-sample-t-tests"><i class="fa fa-check"></i><b>6.5.2</b> Two-sample <em>t</em>-tests</a></li>
+<li class="chapter" data-level="6.5.3" data-path="compare-the-means-of-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-two-groups.html#ttest_paired"><i class="fa fa-check"></i><b>6.5.3</b> Paired <em>t</em>-tests</a></li>
+<li class="chapter" data-level="6.5.4" data-path="compare-the-means-of-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-two-groups.html#what-if-i-run-the-wrong-test"><i class="fa fa-check"></i><b>6.5.4</b> What if I run the wrong test?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="compare-the-mean-of-one-group-one-sample-t-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-mean-of-one-group-one-sample-t-tests.html"><i class="fa fa-check"></i><b>6.6</b> Compare the mean of one group: one sample <em>t</em>-tests</a><ul style="display: none;">
+<li class="chapter" data-level="6.6.1" data-path="compare-the-mean-of-one-group-one-sample-t-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-mean-of-one-group-one-sample-t-tests.html#interchangeability-of-t-tests"><i class="fa fa-check"></i><b>6.6.1</b> Interchangeability of <em>t</em>-tests</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="compare-the-means-of-more-than-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-more-than-two-groups.html"><i class="fa fa-check"></i><b>6.7</b> Compare the means of more than two groups</a><ul style="display: none;">
+<li class="chapter" data-level="6.7.1" data-path="compare-the-means-of-more-than-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-more-than-two-groups.html#plot-the-data-2"><i class="fa fa-check"></i><b>6.7.1</b> Plot the data</a></li>
+<li class="chapter" data-level="6.7.2" data-path="compare-the-means-of-more-than-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-more-than-two-groups.html#anova"><i class="fa fa-check"></i><b>6.7.2</b> ANOVA</a></li>
+<li class="chapter" data-level="6.7.3" data-path="compare-the-means-of-more-than-two-groups.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/compare-the-means-of-more-than-two-groups.html#assumptions"><i class="fa fa-check"></i><b>6.7.3</b> Assumptions</a></li>
+</ul></li>
+<li class="chapter" data-level="6.8" data-path="multiple-testing.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/multiple-testing.html"><i class="fa fa-check"></i><b>6.8</b> Multiple testing</a><ul style="display: none;">
+<li class="chapter" data-level="6.8.1" data-path="multiple-testing.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/multiple-testing.html#pairwise-testing-and-multiple-comparisons"><i class="fa fa-check"></i><b>6.8.1</b> Pairwise testing and multiple comparisons</a></li>
+</ul></li>
+<li class="chapter" data-level="6.9" data-path="chap06-non-param-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-non-param-tests.html"><i class="fa fa-check"></i><b>6.9</b> Non-parametric tests</a><ul style="display: none;">
+<li class="chapter" data-level="6.9.1" data-path="chap06-non-param-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-non-param-tests.html#chap06-transform"><i class="fa fa-check"></i><b>6.9.1</b> Transforming data</a></li>
+<li class="chapter" data-level="6.9.2" data-path="chap06-non-param-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-non-param-tests.html#non-parametric-test-for-comparing-two-groups"><i class="fa fa-check"></i><b>6.9.2</b> Non-parametric test for comparing two groups</a></li>
+<li class="chapter" data-level="6.9.3" data-path="chap06-non-param-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap06-non-param-tests.html#non-parametric-test-for-comparing-more-than-two-groups"><i class="fa fa-check"></i><b>6.9.3</b> Non-parametric test for comparing more than two groups</a></li>
+</ul></li>
+<li class="chapter" data-level="6.10" data-path="finalfit-approach.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/finalfit-approach.html"><i class="fa fa-check"></i><b>6.10</b> Finalfit approach</a></li>
+<li class="chapter" data-level="6.11" data-path="conclusions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/conclusions.html"><i class="fa fa-check"></i><b>6.11</b> Conclusions</a></li>
+<li class="chapter" data-level="6.12" data-path="exercises-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-1.html"><i class="fa fa-check"></i><b>6.12</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="6.12.1" data-path="exercises-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-1.html#chap06-ex1"><i class="fa fa-check"></i><b>6.12.1</b> Exercise</a></li>
+<li class="chapter" data-level="6.12.2" data-path="exercises-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-1.html#chap06-ex2"><i class="fa fa-check"></i><b>6.12.2</b> Exercise</a></li>
+<li class="chapter" data-level="6.12.3" data-path="exercises-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-1.html#chap06-ex3"><i class="fa fa-check"></i><b>6.12.3</b> Exercise</a></li>
+<li class="chapter" data-level="6.12.4" data-path="exercises-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-1.html#chap06-ex4"><i class="fa fa-check"></i><b>6.12.4</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="6.13" data-path="solutions-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/solutions-1.html"><i class="fa fa-check"></i><b>6.13</b> Solutions</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="chap07-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap07-h1.html"><i class="fa fa-check"></i><b>7</b> Linear regression</a><ul style="display: none;">
+<li class="chapter" data-level="7.1" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html"><i class="fa fa-check"></i><b>7.1</b> Regression</a><ul style="display: none;">
+<li class="chapter" data-level="7.1.1" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#the-question-1"><i class="fa fa-check"></i><b>7.1.1</b> The Question (1)</a></li>
+<li class="chapter" data-level="7.1.2" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#chap07-linreg-fit"><i class="fa fa-check"></i><b>7.1.2</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="7.1.3" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#when-the-line-fits-well"><i class="fa fa-check"></i><b>7.1.3</b> When the line fits well</a></li>
+<li class="chapter" data-level="7.1.4" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#the-fitted-line-and-the-linear-equation"><i class="fa fa-check"></i><b>7.1.4</b> The fitted line and the linear equation</a></li>
+<li class="chapter" data-level="7.1.5" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#effect-modification"><i class="fa fa-check"></i><b>7.1.5</b> Effect modification</a></li>
+<li class="chapter" data-level="7.1.6" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#r-squared-and-model-fit"><i class="fa fa-check"></i><b>7.1.6</b> R-squared and model fit</a></li>
+<li class="chapter" data-level="7.1.7" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#chap07-confound"><i class="fa fa-check"></i><b>7.1.7</b> Confounding</a></li>
+<li class="chapter" data-level="7.1.8" data-path="regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/regression.html#summary"><i class="fa fa-check"></i><b>7.1.8</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html"><i class="fa fa-check"></i><b>7.2</b> Fitting simple models</a><ul style="display: none;">
+<li class="chapter" data-level="7.2.1" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#the-question-2"><i class="fa fa-check"></i><b>7.2.1</b> The Question (2)</a></li>
+<li class="chapter" data-level="7.2.2" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#get-the-data-2"><i class="fa fa-check"></i><b>7.2.2</b> Get the data</a></li>
+<li class="chapter" data-level="7.2.3" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#check-the-data"><i class="fa fa-check"></i><b>7.2.3</b> Check the data</a></li>
+<li class="chapter" data-level="7.2.4" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#plot-the-data-3"><i class="fa fa-check"></i><b>7.2.4</b> Plot the data</a></li>
+<li class="chapter" data-level="7.2.5" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.2.5</b> Simple linear regression</a></li>
+<li class="chapter" data-level="7.2.6" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#multivariable-linear-regression"><i class="fa fa-check"></i><b>7.2.6</b> Multivariable linear regression</a></li>
+<li class="chapter" data-level="7.2.7" data-path="fitting-simple-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-simple-models.html#check-assumptions"><i class="fa fa-check"></i><b>7.2.7</b> Check assumptions</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html"><i class="fa fa-check"></i><b>7.3</b> Fitting more complex models</a><ul style="display: none;">
+<li class="chapter" data-level="7.3.1" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#the-question-3"><i class="fa fa-check"></i><b>7.3.1</b> The Question (3)</a></li>
+<li class="chapter" data-level="7.3.2" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#model-fitting-principles"><i class="fa fa-check"></i><b>7.3.2</b> Model fitting principles</a></li>
+<li class="chapter" data-level="7.3.3" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#chap07-aic"><i class="fa fa-check"></i><b>7.3.3</b> AIC</a></li>
+<li class="chapter" data-level="7.3.4" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#get-the-data-3"><i class="fa fa-check"></i><b>7.3.4</b> Get the data</a></li>
+<li class="chapter" data-level="7.3.5" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#check-the-data-1"><i class="fa fa-check"></i><b>7.3.5</b> Check the data</a></li>
+<li class="chapter" data-level="7.3.6" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#plot-the-data-4"><i class="fa fa-check"></i><b>7.3.6</b> Plot the data</a></li>
+<li class="chapter" data-level="7.3.7" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#linear-regression-with-finalfit"><i class="fa fa-check"></i><b>7.3.7</b> Linear regression with finalfit</a></li>
+<li class="chapter" data-level="7.3.8" data-path="fitting-more-complex-models.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-more-complex-models.html#summary-1"><i class="fa fa-check"></i><b>7.3.8</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="exercises-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-2.html"><i class="fa fa-check"></i><b>7.4</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="7.4.1" data-path="exercises-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-2.html#chap07-ex1"><i class="fa fa-check"></i><b>7.4.1</b> Exercise</a></li>
+<li class="chapter" data-level="7.4.2" data-path="exercises-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-2.html#chap07-ex2"><i class="fa fa-check"></i><b>7.4.2</b> Exercise</a></li>
+<li class="chapter" data-level="7.4.3" data-path="exercises-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-2.html#chap07-ex3"><i class="fa fa-check"></i><b>7.4.3</b> Exercise</a></li>
+<li class="chapter" data-level="7.4.4" data-path="exercises-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-2.html#chap07-ex4"><i class="fa fa-check"></i><b>7.4.4</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="solutions-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/solutions-2.html"><i class="fa fa-check"></i><b>7.5</b> Solutions</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="chap08-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap08-h1.html" title="8 Working with categorical outcome variables"><i class="fa fa-check"></i><b>8</b> Working with categorical outcome variables</a><ul style="display: none;">
+<li class="chapter" data-level="8.1" data-path="factors.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/factors.html"><i class="fa fa-check"></i><b>8.1</b> Factors</a></li>
+<li class="chapter" data-level="8.2" data-path="the-question-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-question-4.html"><i class="fa fa-check"></i><b>8.2</b> The Question</a></li>
+<li class="chapter" data-level="8.3" data-path="get-the-data-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data-4.html"><i class="fa fa-check"></i><b>8.3</b> Get the data</a></li>
+<li class="chapter" data-level="8.4" data-path="check-the-data-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/check-the-data-2.html"><i class="fa fa-check"></i><b>8.4</b> Check the data</a></li>
+<li class="chapter" data-level="8.5" data-path="chap08-recode.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap08-recode.html"><i class="fa fa-check"></i><b>8.5</b> Recode the data</a></li>
+<li class="chapter" data-level="8.6" data-path="should-i-convert-a-continuous-variable-to-a-categorical-variable.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/should-i-convert-a-continuous-variable-to-a-categorical-variable.html"><i class="fa fa-check"></i><b>8.6</b> Should I convert a continuous variable to a categorical variable?</a><ul style="display: none;">
+<li class="chapter" data-level="8.6.1" data-path="should-i-convert-a-continuous-variable-to-a-categorical-variable.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/should-i-convert-a-continuous-variable-to-a-categorical-variable.html#equal-intervals-vs-quantiles"><i class="fa fa-check"></i><b>8.6.1</b> Equal intervals vs quantiles</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="plot-the-data-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/plot-the-data-5.html"><i class="fa fa-check"></i><b>8.7</b> Plot the data</a></li>
+<li class="chapter" data-level="8.8" data-path="group-factor-levels-together-fct-collapse.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/group-factor-levels-together-fct-collapse.html"><i class="fa fa-check"></i><b>8.8</b> Group factor levels together - <code>fct_collapse()</code></a></li>
+<li class="chapter" data-level="8.9" data-path="chap08-h2-fct-relevel.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap08-h2-fct-relevel.html"><i class="fa fa-check"></i><b>8.9</b> Change the order of values within a factor - <code>fct_relevel()</code></a></li>
+<li class="chapter" data-level="8.10" data-path="summarising-factors-with-finalfit.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-factors-with-finalfit.html"><i class="fa fa-check"></i><b>8.10</b> Summarising factors with <code>finalfit</code></a></li>
+<li class="chapter" data-level="8.11" data-path="pearsons-chi-squared-and-fishers-exact-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/pearsons-chi-squared-and-fishers-exact-tests.html"><i class="fa fa-check"></i><b>8.11</b> Pearson’s chi-squared and Fisher’s exact tests</a><ul style="display: none;">
+<li class="chapter" data-level="8.11.1" data-path="pearsons-chi-squared-and-fishers-exact-tests.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/pearsons-chi-squared-and-fishers-exact-tests.html#base-r"><i class="fa fa-check"></i><b>8.11.1</b> Base R</a></li>
+</ul></li>
+<li class="chapter" data-level="8.12" data-path="fishers-exact-test.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fishers-exact-test.html"><i class="fa fa-check"></i><b>8.12</b> Fisher’s exact test</a></li>
+<li class="chapter" data-level="8.13" data-path="chi-squared-fishers-exact-test-using-finalfit.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chi-squared-fishers-exact-test-using-finalfit.html"><i class="fa fa-check"></i><b>8.13</b> Chi-squared / Fisher’s exact test using finalfit</a></li>
+<li class="chapter" data-level="8.14" data-path="exercises-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-3.html"><i class="fa fa-check"></i><b>8.14</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="8.14.1" data-path="exercises-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-3.html#chap08-ex1"><i class="fa fa-check"></i><b>8.14.1</b> Exercise</a></li>
+<li class="chapter" data-level="8.14.2" data-path="exercises-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-3.html#chap08-ex2"><i class="fa fa-check"></i><b>8.14.2</b> Exercise</a></li>
+<li class="chapter" data-level="8.14.3" data-path="exercises-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-3.html#chap08-ex3"><i class="fa fa-check"></i><b>8.14.3</b> Exercise</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="chap09-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap09-h1.html"><i class="fa fa-check"></i><b>9</b> Logistic regression</a><ul style="display: none;">
+<li class="chapter" data-level="9.1" data-path="generalised-linear-modelling.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/generalised-linear-modelling.html"><i class="fa fa-check"></i><b>9.1</b> Generalised linear modelling</a></li>
+<li class="chapter" data-level="9.2" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html"><i class="fa fa-check"></i><b>9.2</b> Binary logistic regression</a><ul style="display: none;">
+<li class="chapter" data-level="9.2.1" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#the-question-1-1"><i class="fa fa-check"></i><b>9.2.1</b> The Question (1)</a></li>
+<li class="chapter" data-level="9.2.2" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#odds-and-probabilities"><i class="fa fa-check"></i><b>9.2.2</b> Odds and probabilities</a></li>
+<li class="chapter" data-level="9.2.3" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#odds-ratios"><i class="fa fa-check"></i><b>9.2.3</b> Odds ratios</a></li>
+<li class="chapter" data-level="9.2.4" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>9.2.4</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="9.2.5" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#the-fitted-line-and-the-logistic-regression-equation"><i class="fa fa-check"></i><b>9.2.5</b> The fitted line and the logistic regression equation</a></li>
+<li class="chapter" data-level="9.2.6" data-path="binary-logistic-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/binary-logistic-regression.html#effect-modification-and-confounding"><i class="fa fa-check"></i><b>9.2.6</b> Effect modification and confounding</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html"><i class="fa fa-check"></i><b>9.3</b> Data preparation and exploratory analysis</a><ul style="display: none;">
+<li class="chapter" data-level="9.3.1" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#the-question-2-1"><i class="fa fa-check"></i><b>9.3.1</b> The Question (2)</a></li>
+<li class="chapter" data-level="9.3.2" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#get-the-data-5"><i class="fa fa-check"></i><b>9.3.2</b> Get the data</a></li>
+<li class="chapter" data-level="9.3.3" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#check-the-data-3"><i class="fa fa-check"></i><b>9.3.3</b> Check the data</a></li>
+<li class="chapter" data-level="9.3.4" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#recode-the-data"><i class="fa fa-check"></i><b>9.3.4</b> Recode the data</a></li>
+<li class="chapter" data-level="9.3.5" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#plot-the-data-6"><i class="fa fa-check"></i><b>9.3.5</b> Plot the data</a></li>
+<li class="chapter" data-level="9.3.6" data-path="data-preparation-and-exploratory-analysis.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/data-preparation-and-exploratory-analysis.html#tabulate-data"><i class="fa fa-check"></i><b>9.3.6</b> Tabulate data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="model-assumptions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/model-assumptions.html"><i class="fa fa-check"></i><b>9.4</b> Model assumptions</a><ul style="display: none;">
+<li class="chapter" data-level="9.4.1" data-path="model-assumptions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/model-assumptions.html#linearity-of-continuous-variables-to-the-response"><i class="fa fa-check"></i><b>9.4.1</b> Linearity of continuous variables to the response</a></li>
+<li class="chapter" data-level="9.4.2" data-path="model-assumptions.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/model-assumptions.html#chap09-h2-multicollinearity"><i class="fa fa-check"></i><b>9.4.2</b> Multicollinearity</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="fitting-logistic-regression-models-in-base-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-logistic-regression-models-in-base-r.html"><i class="fa fa-check"></i><b>9.5</b> Fitting logistic regression models in base R</a></li>
+<li class="chapter" data-level="9.6" data-path="modelling-strategy-for-binary-outcomes.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/modelling-strategy-for-binary-outcomes.html"><i class="fa fa-check"></i><b>9.6</b> Modelling strategy for binary outcomes</a></li>
+<li class="chapter" data-level="9.7" data-path="fitting-logistic-regression-models-with-finalfit.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-logistic-regression-models-with-finalfit.html"><i class="fa fa-check"></i><b>9.7</b> Fitting logistic regression models with finalfit</a><ul style="display: none;">
+<li class="chapter" data-level="9.7.1" data-path="fitting-logistic-regression-models-with-finalfit.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/fitting-logistic-regression-models-with-finalfit.html#criterion-based-model-fitting"><i class="fa fa-check"></i><b>9.7.1</b> Criterion-based model fitting</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="chap09-model-fitting.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap09-model-fitting.html"><i class="fa fa-check"></i><b>9.8</b> Model fitting</a><ul style="display: none;">
+<li class="chapter" data-level="9.8.1" data-path="chap09-model-fitting.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap09-model-fitting.html#odds-ratio-plot"><i class="fa fa-check"></i><b>9.8.1</b> Odds ratio plot</a></li>
+</ul></li>
+<li class="chapter" data-level="9.9" data-path="correlated-groups-of-observations.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/correlated-groups-of-observations.html"><i class="fa fa-check"></i><b>9.9</b> Correlated groups of observations</a><ul style="display: none;">
+<li class="chapter" data-level="9.9.1" data-path="correlated-groups-of-observations.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/correlated-groups-of-observations.html#simulate-data"><i class="fa fa-check"></i><b>9.9.1</b> Simulate data</a></li>
+<li class="chapter" data-level="9.9.2" data-path="correlated-groups-of-observations.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/correlated-groups-of-observations.html#plot-the-data-7"><i class="fa fa-check"></i><b>9.9.2</b> Plot the data</a></li>
+<li class="chapter" data-level="9.9.3" data-path="correlated-groups-of-observations.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/correlated-groups-of-observations.html#mixed-effects-models-in-base-r"><i class="fa fa-check"></i><b>9.9.3</b> Mixed effects models in base R</a></li>
+</ul></li>
+<li class="chapter" data-level="9.10" data-path="exercises-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-4.html"><i class="fa fa-check"></i><b>9.10</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="9.10.1" data-path="exercises-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-4.html#chap09-ex1"><i class="fa fa-check"></i><b>9.10.1</b> Exercise</a></li>
+<li class="chapter" data-level="9.10.2" data-path="exercises-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-4.html#chap09-ex2"><i class="fa fa-check"></i><b>9.10.2</b> Exercise</a></li>
+<li class="chapter" data-level="9.10.3" data-path="exercises-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-4.html#chap09-ex3"><i class="fa fa-check"></i><b>9.10.3</b> Exercise</a></li>
+<li class="chapter" data-level="9.10.4" data-path="exercises-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-4.html#chap09-ex4"><i class="fa fa-check"></i><b>9.10.4</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="9.11" data-path="solutions-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/solutions-3.html"><i class="fa fa-check"></i><b>9.11</b> Solutions</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="chap10-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap10-h1.html"><i class="fa fa-check"></i><b>10</b> Time-to-event data and survival</a><ul style="display: none;">
+<li class="chapter" data-level="10.1" data-path="the-question-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-question-5.html"><i class="fa fa-check"></i><b>10.1</b> The Question</a></li>
+<li class="chapter" data-level="10.2" data-path="get-and-check-the-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-and-check-the-data.html"><i class="fa fa-check"></i><b>10.2</b> Get and check the data</a></li>
+<li class="chapter" data-level="10.3" data-path="death-status.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/death-status.html"><i class="fa fa-check"></i><b>10.3</b> Death status</a></li>
+<li class="chapter" data-level="10.4" data-path="time-and-censoring.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/time-and-censoring.html"><i class="fa fa-check"></i><b>10.4</b> Time and censoring</a></li>
+<li class="chapter" data-level="10.5" data-path="recode-the-data-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/recode-the-data-1.html"><i class="fa fa-check"></i><b>10.5</b> Recode the data</a></li>
+<li class="chapter" data-level="10.6" data-path="kaplan-meier-survival-estimator.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/kaplan-meier-survival-estimator.html"><i class="fa fa-check"></i><b>10.6</b> Kaplan Meier survival estimator</a><ul style="display: none;">
+<li class="chapter" data-level="10.6.1" data-path="kaplan-meier-survival-estimator.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/kaplan-meier-survival-estimator.html#km-analysis-for-whole-cohort"><i class="fa fa-check"></i><b>10.6.1</b> KM analysis for whole cohort</a></li>
+<li class="chapter" data-level="10.6.2" data-path="kaplan-meier-survival-estimator.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/kaplan-meier-survival-estimator.html#model"><i class="fa fa-check"></i><b>10.6.2</b> Model</a></li>
+<li class="chapter" data-level="10.6.3" data-path="kaplan-meier-survival-estimator.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/kaplan-meier-survival-estimator.html#life-table"><i class="fa fa-check"></i><b>10.6.3</b> Life table</a></li>
+</ul></li>
+<li class="chapter" data-level="10.7" data-path="kaplan-meier-plot.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/kaplan-meier-plot.html"><i class="fa fa-check"></i><b>10.7</b> Kaplan Meier plot</a></li>
+<li class="chapter" data-level="10.8" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html"><i class="fa fa-check"></i><b>10.8</b> Cox proportional hazards regression</a><ul style="display: none;">
+<li class="chapter" data-level="10.8.1" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#coxph"><i class="fa fa-check"></i><b>10.8.1</b> <code>coxph()</code></a></li>
+<li class="chapter" data-level="10.8.2" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#finalfit"><i class="fa fa-check"></i><b>10.8.2</b> <code>finalfit()</code></a></li>
+<li class="chapter" data-level="10.8.3" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#reduced-model"><i class="fa fa-check"></i><b>10.8.3</b> Reduced model</a></li>
+<li class="chapter" data-level="10.8.4" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#testing-for-proportional-hazards"><i class="fa fa-check"></i><b>10.8.4</b> Testing for proportional hazards</a></li>
+<li class="chapter" data-level="10.8.5" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#stratified-models"><i class="fa fa-check"></i><b>10.8.5</b> Stratified models</a></li>
+<li class="chapter" data-level="10.8.6" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#correlated-groups-of-observations-1"><i class="fa fa-check"></i><b>10.8.6</b> Correlated groups of observations</a></li>
+<li class="chapter" data-level="10.8.7" data-path="cox-proportional-hazards-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/cox-proportional-hazards-regression.html#hazard-ratio-plot"><i class="fa fa-check"></i><b>10.8.7</b> Hazard ratio plot</a></li>
+</ul></li>
+<li class="chapter" data-level="10.9" data-path="competing-risks-regression.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/competing-risks-regression.html"><i class="fa fa-check"></i><b>10.9</b> Competing risks regression</a></li>
+<li class="chapter" data-level="10.10" data-path="summary-2.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summary-2.html"><i class="fa fa-check"></i><b>10.10</b> Summary</a></li>
+<li class="chapter" data-level="10.11" data-path="dates-in-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/dates-in-r.html"><i class="fa fa-check"></i><b>10.11</b> Dates in R</a><ul style="display: none;">
+<li class="chapter" data-level="10.11.1" data-path="dates-in-r.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/dates-in-r.html#converting-dates-to-survival-time"><i class="fa fa-check"></i><b>10.11.1</b> Converting dates to survival time</a></li>
+</ul></li>
+<li class="chapter" data-level="10.12" data-path="exercises-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-5.html"><i class="fa fa-check"></i><b>10.12</b> Exercises</a><ul style="display: none;">
+<li class="chapter" data-level="10.12.1" data-path="exercises-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-5.html#chap10-ex1"><i class="fa fa-check"></i><b>10.12.1</b> Exercise</a></li>
+<li class="chapter" data-level="10.12.2" data-path="exercises-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/exercises-5.html#chap10-ex2"><i class="fa fa-check"></i><b>10.12.2</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="10.13" data-path="solutions-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/solutions-4.html"><i class="fa fa-check"></i><b>10.13</b> Solutions</a></li>
+</ul></li>
+<li class="part"><span><b>III Workflow</b></span></li>
+<li class="chapter" data-level="11" data-path="chap11-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap11-h1.html"><i class="fa fa-check"></i><b>11</b> The problem of missing data</a><ul style="display: none;">
+<li class="chapter" data-level="11.1" data-path="identification-of-missing-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/identification-of-missing-data.html"><i class="fa fa-check"></i><b>11.1</b> Identification of missing data</a><ul style="display: none;">
+<li class="chapter" data-level="11.1.1" data-path="identification-of-missing-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/identification-of-missing-data.html#missing-completely-at-random-mcar"><i class="fa fa-check"></i><b>11.1.1</b> Missing completely at random (MCAR)</a></li>
+<li class="chapter" data-level="11.1.2" data-path="identification-of-missing-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/identification-of-missing-data.html#missing-at-random-mar"><i class="fa fa-check"></i><b>11.1.2</b> Missing at random (MAR)</a></li>
+<li class="chapter" data-level="11.1.3" data-path="identification-of-missing-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/identification-of-missing-data.html#missing-not-at-random-mnar"><i class="fa fa-check"></i><b>11.1.3</b> Missing not at random (MNAR)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="ensure-your-data-are-coded-correctly-ff-glimpse.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/ensure-your-data-are-coded-correctly-ff-glimpse.html"><i class="fa fa-check"></i><b>11.2</b> Ensure your data are coded correctly: <code>ff_glimpse()</code></a><ul style="display: none;">
+<li class="chapter" data-level="11.2.1" data-path="ensure-your-data-are-coded-correctly-ff-glimpse.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/ensure-your-data-are-coded-correctly-ff-glimpse.html#the-question-6"><i class="fa fa-check"></i><b>11.2.1</b> The Question</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="identify-missing-values-in-each-variable-missing-plot.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/identify-missing-values-in-each-variable-missing-plot.html"><i class="fa fa-check"></i><b>11.3</b> Identify missing values in each variable: <code>missing_plot()</code></a></li>
+<li class="chapter" data-level="11.4" data-path="look-for-patterns-of-missingness-missing-pattern.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/look-for-patterns-of-missingness-missing-pattern.html"><i class="fa fa-check"></i><b>11.4</b> Look for patterns of missingness: <code>missing_pattern()</code></a></li>
+<li class="chapter" data-level="11.5" data-path="including-missing-data-in-demographics-tables.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/including-missing-data-in-demographics-tables.html"><i class="fa fa-check"></i><b>11.5</b> Including missing data in demographics tables</a></li>
+<li class="chapter" data-level="11.6" data-path="check-for-associations-between-missing-and-observed-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/check-for-associations-between-missing-and-observed-data.html"><i class="fa fa-check"></i><b>11.6</b> Check for associations between missing and observed data</a><ul style="display: none;">
+<li class="chapter" data-level="11.6.1" data-path="check-for-associations-between-missing-and-observed-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/check-for-associations-between-missing-and-observed-data.html#for-those-who-like-an-omnibus-test"><i class="fa fa-check"></i><b>11.6.1</b> For those who like an omnibus test</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="handling-missing-data-mcar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mcar.html"><i class="fa fa-check"></i><b>11.7</b> Handling missing data: MCAR</a><ul style="display: none;">
+<li class="chapter" data-level="11.7.1" data-path="handling-missing-data-mcar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mcar.html#common-solution-row-wise-deletion"><i class="fa fa-check"></i><b>11.7.1</b> Common solution: row-wise deletion</a></li>
+<li class="chapter" data-level="11.7.2" data-path="handling-missing-data-mcar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mcar.html#other-considerations"><i class="fa fa-check"></i><b>11.7.2</b> Other considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="11.8" data-path="handling-missing-data-mar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mar.html"><i class="fa fa-check"></i><b>11.8</b> Handling missing data: MAR</a><ul style="display: none;">
+<li class="chapter" data-level="11.8.1" data-path="handling-missing-data-mar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mar.html#common-solution-multivariate-imputation-by-chained-equations-mice"><i class="fa fa-check"></i><b>11.8.1</b> Common solution: Multivariate Imputation by Chained Equations (mice)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.9" data-path="handling-missing-data-mnar.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/handling-missing-data-mnar.html"><i class="fa fa-check"></i><b>11.9</b> Handling missing data: MNAR</a></li>
+<li class="chapter" data-level="11.10" data-path="summary-3.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summary-3.html"><i class="fa fa-check"></i><b>11.10</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="chap12-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap12-h1.html"><i class="fa fa-check"></i><b>12</b> Notebooks and Markdown</a><ul style="display: none;">
+<li class="chapter" data-level="12.1" data-path="what-is-a-notebook.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/what-is-a-notebook.html"><i class="fa fa-check"></i><b>12.1</b> What is a Notebook?</a></li>
+<li class="chapter" data-level="12.2" data-path="what-is-markdown.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/what-is-markdown.html"><i class="fa fa-check"></i><b>12.2</b> What is Markdown?</a></li>
+<li class="chapter" data-level="12.3" data-path="what-is-the-difference-between-a-notebook-and-an-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/what-is-the-difference-between-a-notebook-and-an-r-markdown-file.html"><i class="fa fa-check"></i><b>12.3</b> What is the difference between a Notebook and an R Markdown file?</a></li>
+<li class="chapter" data-level="12.4" data-path="notebook-vs-html-vs-pdf-vs-word.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/notebook-vs-html-vs-pdf-vs-word.html"><i class="fa fa-check"></i><b>12.4</b> Notebook vs HTML vs PDF vs Word</a></li>
+<li class="chapter" data-level="12.5" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html"><i class="fa fa-check"></i><b>12.5</b> The anatomy of a Notebook / R Markdown file</a><ul style="display: none;">
+<li class="chapter" data-level="12.5.1" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html#yaml-header"><i class="fa fa-check"></i><b>12.5.1</b> YAML header</a></li>
+<li class="chapter" data-level="12.5.2" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html#r-code-chunks"><i class="fa fa-check"></i><b>12.5.2</b> R code chunks</a></li>
+<li class="chapter" data-level="12.5.3" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html#setting-default-chunk-options"><i class="fa fa-check"></i><b>12.5.3</b> Setting default chunk options</a></li>
+<li class="chapter" data-level="12.5.4" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html#setting-default-figure-options"><i class="fa fa-check"></i><b>12.5.4</b> Setting default figure options</a></li>
+<li class="chapter" data-level="12.5.5" data-path="the-anatomy-of-a-notebook-r-markdown-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/the-anatomy-of-a-notebook-r-markdown-file.html#markdown-elements"><i class="fa fa-check"></i><b>12.5.5</b> Markdown elements</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="interface-and-outputting.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/interface-and-outputting.html"><i class="fa fa-check"></i><b>12.6</b> Interface and outputting</a><ul style="display: none;">
+<li class="chapter" data-level="12.6.1" data-path="interface-and-outputting.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/interface-and-outputting.html#running-code-and-chunks-knitting"><i class="fa fa-check"></i><b>12.6.1</b> Running code and chunks, knitting</a></li>
+</ul></li>
+<li class="chapter" data-level="12.7" data-path="file-structure-and-workflow.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/file-structure-and-workflow.html"><i class="fa fa-check"></i><b>12.7</b> File structure and workflow</a><ul style="display: none;">
+<li class="chapter" data-level="12.7.1" data-path="file-structure-and-workflow.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/file-structure-and-workflow.html#why-go-to-all-this-bother"><i class="fa fa-check"></i><b>12.7.1</b> Why go to all this bother?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="chap13-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap13-h1.html"><i class="fa fa-check"></i><b>13</b> Exporting and reporting</a><ul style="display: none;">
+<li class="chapter" data-level="13.1" data-path="which-format-should-i-use.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/which-format-should-i-use.html"><i class="fa fa-check"></i><b>13.1</b> Which format should I use?</a></li>
+<li class="chapter" data-level="13.2" data-path="working-in-a-r-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/working-in-a-r-file.html"><i class="fa fa-check"></i><b>13.2</b> Working in a <code>.R</code> file</a></li>
+<li class="chapter" data-level="13.3" data-path="demographics-table.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/demographics-table.html"><i class="fa fa-check"></i><b>13.3</b> Demographics table</a></li>
+<li class="chapter" data-level="13.4" data-path="logistic-regression-table.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/logistic-regression-table.html"><i class="fa fa-check"></i><b>13.4</b> Logistic regression table</a></li>
+<li class="chapter" data-level="13.5" data-path="odds-ratio-plot-1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/odds-ratio-plot-1.html"><i class="fa fa-check"></i><b>13.5</b> Odds ratio plot</a></li>
+<li class="chapter" data-level="13.6" data-path="ms-word-via-knitrr-markdown.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/ms-word-via-knitrr-markdown.html"><i class="fa fa-check"></i><b>13.6</b> MS Word via knitr/R Markdown</a><ul style="display: none;">
+<li class="chapter" data-level="13.6.1" data-path="ms-word-via-knitrr-markdown.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/ms-word-via-knitrr-markdown.html#figure-quality-in-word-output"><i class="fa fa-check"></i><b>13.6.1</b> Figure quality in Word output</a></li>
+</ul></li>
+<li class="chapter" data-level="13.7" data-path="create-word-template-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/create-word-template-file.html"><i class="fa fa-check"></i><b>13.7</b> Create Word template file</a></li>
+<li class="chapter" data-level="13.8" data-path="pdf-via-knitrr-markdown.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/pdf-via-knitrr-markdown.html"><i class="fa fa-check"></i><b>13.8</b> PDF via knitr/R Markdown</a></li>
+<li class="chapter" data-level="13.9" data-path="working-in-a-rmd-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/working-in-a-rmd-file.html"><i class="fa fa-check"></i><b>13.9</b> Working in a <code>.Rmd</code> file</a></li>
+<li class="chapter" data-level="13.10" data-path="moving-between-formats.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/moving-between-formats.html"><i class="fa fa-check"></i><b>13.10</b> Moving between formats</a></li>
+<li class="chapter" data-level="13.11" data-path="summary-4.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summary-4.html"><i class="fa fa-check"></i><b>13.11</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="chap14-h1.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/chap14-h1.html"><i class="fa fa-check"></i><b>14</b> Version control</a><ul style="display: none;">
+<li class="chapter" data-level="14.1" data-path="setup-git-on-rstudio-and-associate-with-github.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/setup-git-on-rstudio-and-associate-with-github.html"><i class="fa fa-check"></i><b>14.1</b> Setup Git on RStudio and associate with GitHub</a></li>
+<li class="chapter" data-level="14.2" data-path="create-an-ssh-rsa-key-and-add-to-your-github-account.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/create-an-ssh-rsa-key-and-add-to-your-github-account.html"><i class="fa fa-check"></i><b>14.2</b> Create an SSH RSA key and add to your GitHub account</a></li>
+<li class="chapter" data-level="14.3" data-path="create-a-project-in-rstudio-and-commit-a-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/create-a-project-in-rstudio-and-commit-a-file.html"><i class="fa fa-check"></i><b>14.3</b> Create a project in RStudio and commit a file</a></li>
+<li class="chapter" data-level="14.4" data-path="create-a-new-repository-on-github-and-link-to-rstudio-project.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/create-a-new-repository-on-github-and-link-to-rstudio-project.html"><i class="fa fa-check"></i><b>14.4</b> Create a new repository on GitHub and link to RStudio project</a></li>
+<li class="chapter" data-level="14.5" data-path="clone-an-existing-github-project-to-new-rstudio-project.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/clone-an-existing-github-project-to-new-rstudio-project.html"><i class="fa fa-check"></i><b>14.5</b> Clone an existing GitHub project to new RStudio project</a></li>
+<li class="chapter" data-level="14.6" data-path="summary-5.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summary-5.html"><i class="fa fa-check"></i><b>14.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="encryption.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/encryption.html"><i class="fa fa-check"></i><b>15</b> Encryption</a><ul style="display: none;">
+<li class="chapter" data-level="15.1" data-path="safe-practice.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/safe-practice.html"><i class="fa fa-check"></i><b>15.1</b> Safe practice</a></li>
+<li class="chapter" data-level="15.2" data-path="encryptr-package.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/encryptr-package.html"><i class="fa fa-check"></i><b>15.2</b> <strong>encryptr</strong> package</a></li>
+<li class="chapter" data-level="15.3" data-path="get-the-package.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-package.html"><i class="fa fa-check"></i><b>15.3</b> Get the package</a></li>
+<li class="chapter" data-level="15.4" data-path="get-the-data-6.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data-6.html"><i class="fa fa-check"></i><b>15.4</b> Get the data</a></li>
+<li class="chapter" data-level="15.5" data-path="generate-privatepublic-keys.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/generate-privatepublic-keys.html"><i class="fa fa-check"></i><b>15.5</b> Generate private/public keys</a></li>
+<li class="chapter" data-level="15.6" data-path="encrypt-columns-of-data.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/encrypt-columns-of-data.html"><i class="fa fa-check"></i><b>15.6</b> Encrypt columns of data</a></li>
+<li class="chapter" data-level="15.7" data-path="decrypt-specific-information-only.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/decrypt-specific-information-only.html"><i class="fa fa-check"></i><b>15.7</b> Decrypt specific information only</a></li>
+<li class="chapter" data-level="15.8" data-path="using-a-lookup-table.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/using-a-lookup-table.html"><i class="fa fa-check"></i><b>15.8</b> Using a lookup table</a></li>
+<li class="chapter" data-level="15.9" data-path="encrypting-a-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/encrypting-a-file.html"><i class="fa fa-check"></i><b>15.9</b> Encrypting a file</a></li>
+<li class="chapter" data-level="15.10" data-path="decrypting-a-file.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/decrypting-a-file.html"><i class="fa fa-check"></i><b>15.10</b> Decrypting a file</a></li>
+<li class="chapter" data-level="15.11" data-path="ciphertexts-are-not-matchable.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/ciphertexts-are-not-matchable.html"><i class="fa fa-check"></i><b>15.11</b> Ciphertexts are not matchable</a></li>
+<li class="chapter" data-level="15.12" data-path="providing-a-public-key.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/providing-a-public-key.html"><i class="fa fa-check"></i><b>15.12</b> Providing a public key</a></li>
+<li class="chapter" data-level="15.13" data-path="use-cases.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/use-cases.html"><i class="fa fa-check"></i><b>15.13</b> Use cases</a><ul style="display: none;">
+<li class="chapter" data-level="15.13.1" data-path="use-cases.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/use-cases.html#blinding-in-trials"><i class="fa fa-check"></i><b>15.13.1</b> Blinding in trials</a></li>
+<li class="chapter" data-level="15.13.2" data-path="use-cases.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/use-cases.html#re-contacting-participants"><i class="fa fa-check"></i><b>15.13.2</b> Re-contacting participants</a></li>
+<li class="chapter" data-level="15.13.3" data-path="use-cases.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/use-cases.html#long-term-follow-up-of-participants"><i class="fa fa-check"></i><b>15.13.3</b> Long-term follow-up of participants</a></li>
+</ul></li>
+<li class="chapter" data-level="15.14" data-path="summary-6.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/summary-6.html"><i class="fa fa-check"></i><b>15.14</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="https://argoshare.is.ed.ac.uk/healthyr_book/appendix.html"><i class="fa fa-check"></i>Appendix</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org/" target="_blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body fixed">
+      <div class="body-inner">
+        <div class="book-header fixed" role="navigation" style="background-color: rgb(23, 25, 26); --darkreader-inline-bgcolor:#111314;" data-darkreader-inline-bgcolor="">
+          <a class="btn pull-left js-toolbar-action" aria-label="Toggle Sidebar" title="Toggle Sidebar" href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html#"><i class="fa fa-align-justify"></i></a><a class="btn pull-left js-toolbar-action" aria-label="Search" title="Search" href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html#"><i class="fa fa-search"></i></a><div class="dropdown pull-left font-settings js-toolbar-action"><a class="btn toggle-dropdown" aria-label="Font Settings" title="Font Settings" href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html#"><i class="fa fa-font"></i></a><div class="dropdown-menu dropdown-right"><div class="dropdown-caret"><span class="caret-outer"></span><span class="caret-inner"></span></div><div class="buttons"><button class="button size-2 font-reduce">A</button><button class="button size-2 font-enlarge">A</button></div><div class="buttons"><button class="button size-2 ">Serif</button><button class="button size-2 ">Sans</button></div><div class="buttons"><button class="button size-3 ">White</button><button class="button size-3 ">Sepia</button><button class="button size-3 ">Night</button></div></div></div><a class="btn pull-left js-toolbar-action" aria-label="Edit" title="Edit" href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html#"><i class="fa fa-edit"></i></a><a class="btn pull-left js-toolbar-action" aria-label="Information about the toolbar" title="Information about the toolbar" href="https://argoshare.is.ed.ac.uk/healthyr_book/summarising-data.html#"><i class="fa fa-info"></i></a><h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="https://argoshare.is.ed.ac.uk/healthyr_book/">R for Health Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="summarising-data" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Summarising data</h1>
+<p></p>
+<blockquote>
+<p>“The Answer to the Great Question … Of Life, the Universe and Everything … Is … Forty-two,” said Deep Thought, with infinite majesty and calm.<br>
+Douglas Adams, The Hitchhiker’s Guide to the Galaxy</p>
+</blockquote>
+<p>In this chapter you will find out how to:</p>
+<ul>
+<li>summarise data using: <code>group_by()</code>, <code>summarise()</code>, and <code>mutate()</code>;</li>
+<li>reshape data between the wide and long formats: <code>pivot_wider()</code> and <code>pivot_longer()</code>;</li>
+<li><code>select()</code> columns and <code>arrange()</code> (sort) rows.</li>
+</ul>
+<p>The exercises at the end of this chapter combine all of the above to give context and show you more worked examples.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="https://argoshare.is.ed.ac.uk/healthyr_book/joining-multiple-datasets.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="https://argoshare.is.ed.ac.uk/healthyr_book/get-the-data.html" class="navigation navigation-next " aria-label="Next page" style="margin-right: 0px;"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="./R_basics_1_files/app.min.js.download"></script>
+<script src="./R_basics_1_files/lunr.js.download"></script>
+<script src="./R_basics_1_files/clipboard.min.js.download"></script>
+<script src="./R_basics_1_files/plugin-search.js.download"></script>
+<script src="./R_basics_1_files/plugin-sharing.js.download"></script>
+<script src="./R_basics_1_files/plugin-fontsettings.js.download"></script>
+<script src="./R_basics_1_files/plugin-bookdown.js.download"></script>
+<script src="./R_basics_1_files/jquery.highlight.js.download"></script>
+<script src="./R_basics_1_files/plugin-clipboard.js.download"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/SurgicalInformatics/healthyr_book/edit/master/03_summarising.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+
+</body></html>

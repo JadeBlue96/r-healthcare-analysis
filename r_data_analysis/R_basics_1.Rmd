@@ -1,0 +1,234 @@
+---
+title: "R Basics"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+### Packages
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+
+### Reading data
+
+```{r}
+gbd_short <- read_csv('data/global_burden_disease_cause-year.csv')
+```
+
+### Data types
+```{r}
+tp_data <- read_csv('data/typesdata.csv')
+tp_data
+```
+```{r}
+tp_data_faulty <- read_csv('data/typesdata_faulty.csv')
+tp_data_faulty
+```
+```{r}
+tp_data$measurement %>% mean()
+m_mean <- tp_data$measurement %>% mean()
+m_mean == 3.333333
+near(m_mean, 3.333333, 0.000001)
+```
+
+```{r}
+tp_data %>% count(group)
+tp_data %>% count(group, sort=TRUE)
+tp_data %>%
+  add_row(id='ID3') %>%
+  count(id,sort=TRUE)
+```
+```{r}
+curr_datetime <- Sys.time()
+curr_datetime
+my_datetime <- "2020-12-01 12:00"
+my_datetime
+#my_datetime - curr_datetime
+curr_datetime %>% class()
+my_datetime %>% class()
+ymd_hm(my_datetime) - curr_datetime
+
+my_datesdiff <- ymd_hm(my_datetime) - curr_datetime
+my_datesdiff %>% class()
+ymd_hm("2021-01-02 12:00") + my_datesdiff
+
+560/as.numeric(my_datesdiff)
+
+# parse date format
+parse_date_time("12:34 07/Jan'20", "%H:%M %d/%b'%y")
+
+# printing
+Sys.time() %>% format("%H:%M on %B-%d (%Y)")
+Sys.time() %>% format("Happy days, the current time is %H:%M %B-%d (%Y)!")
+```
+### Objects and functions
+```{r}
+mydata <- tibble(
+  id   = 1:4,
+  sex  = c("Male", "Female", "Female", "Male"),
+  var1 = c(4, 1, 2, 3),
+  var2 = c(NA, 4, 5, NA),
+  var3 = c(2, 1, NA, NA)
+)
+mydata
+mydata$var1
+mean(mydata$var1)
+mean(mydata$var2)
+mean(mydata$sex)
+mean(mydata$var2, na.rm=TRUE)
+```
+
+```{r}
+ex_seq <- seq(15,30)
+ex_seq / 2
+```
+
+### Pipes
+```{r}
+mydata$var1 %>% mean()
+mean_result <- mydata$var1 %>% mean()
+# lm() wants us to specify the variables first (dependent~explanatory), and then wants the tibble these columns are in. So we have to use the . to tell the pipe to send the data to the second argument of lm(), not the first
+mydata %>% 
+  lm(var1~var2, data = .)
+```
+### Operators for filtering data
+```{r}
+gbd_short %>%
+  filter(year < 1995)
+gbd_short %>% 
+  filter(year == 1995 | year == 2017)
+gbd_short %>% 
+  filter(year == max(year) | year == min(year))
+
+mydata_year2000 <- gbd_short %>% 
+  filter(year == 2000)
+
+# advanced filtering
+new_data_selection <- gbd_short %>% 
+  filter((year == 1990 | year == 2013) & cause == "Communicable diseases")
+new_data_selection <- gbd_short %>% 
+  filter(year == 1990 | year == 2013) %>% 
+  filter(cause == "Communicable diseases")
+new_data_selection <- gbd_short %>% 
+  filter(year == 1990 | year == 2013,
+         cause == "Communicable diseases")
+```
+### Combine function c()
+```{r}
+gbd_short$cause %>% unique()
+gbd_short %>% 
+  # also filtering for a single year to keep the result concise
+  filter(year == 1990) %>% 
+  filter(cause == "Communicable diseases" | cause == "Non-communicable diseases")
+
+gbd_short %>% 
+  filter(year == 1990) %>% 
+  filter(cause %in% c("Communicable diseases", "Non-communicable diseases"))
+```
+### Filtering missing data
+```{r}
+mydata
+mydata %>% 
+  filter(is.na(var2))
+mydata %>% 
+  filter(!is.na(var2))
+
+# Exclude/include NAs
+mydata %>% 
+  filter(var2 != 5)
+pr <- mydata %>% 
+  filter(var2 != 5 | is.na(var2))
+nrow(mydata)
+nrow(pr)
+```
+### Creating new columns (mutate)
+```{r}
+tp_data
+tp_data %>%
+  mutate(measurement/2)
+
+tp_data %>%
+  mutate(measurement_half = measurement/2)
+
+tp_data %>% 
+  mutate(reference_date   = ymd_hm("2020-01-01 12:00"),
+         dates_difference = reference_date - date) %>% 
+  select(date, reference_date, dates_difference)
+
+tp_data %>%
+  mutate(mean_measurement     = mean(measurement)) %>% 
+  mutate(measurement_relative = measurement/mean_measurement) %>% 
+  select(matches("measurement"))
+
+tp_data %>%
+  mutate(reference_date   = ymd_hm("2020-01-01 12:00"),
+         dates_difference = reference_date - date) %>% 
+  mutate(dates_difference = round(dates_difference)) %>% 
+  select(matches("date"))
+```
+### Conditional filters
+```{r}
+tp_data %>%
+  mutate(above_threshold = if_else(measurement>3,
+                                   'Above three',
+                                   'Below three'))
+```
+### Create labels paste()
+```{r}
+tp_data %>%
+  mutate(plot_label = paste(id, 'was last measured at ',
+                          date, ', and the value was', 
+                          measurement)) %>%
+  select(plot_label)
+
+pastedata <- tibble(year  = c(2007, 2008, 2009),
+                   month = c("Jan", "Feb", "March"),
+                   day   = c(1, 2, 3))
+
+pastedata
+pastedata %>% 
+  mutate(date = paste(day, month, year, sep = "-"))
+
+pastedata %>% 
+  mutate(date = paste(day, month, year, sep = "-")) %>% 
+  mutate(date = dmy(date))
+```
+### Joining data
+```{r}
+pt_data <- read_csv('data/patient_data.csv')
+pt_data
+labs_data <- read_csv('data/labs_data.csv')
+labs_data
+
+full_join(pt_data, labs_data)
+inner_join(pt_data, labs_data)
+left_join(pt_data, labs_data)
+right_join(pt_data, labs_data)
+
+# Data from same source
+patientdata_new <- read_csv("data/patient_data_updated.csv")
+patientdata_new
+bind_rows(pt_data, patientdata_new)
+
+labsdata_updated <- labs_data %>% 
+  add_row(id = 5, measurement = 2.49)
+labsdata_updated
+left_join(pt_data, labsdata_updated)
+```
+
